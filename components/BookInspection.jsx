@@ -53,7 +53,7 @@ export default function BookInspection() {
             </div>
             <select aria-label="Service needed" value={form.service} onChange={upd("service")} required style={{ ...inp, marginBottom: 10, color: form.service ? C.textWhite : C.textDim, appearance: "none", backgroundImage: selectArrow, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }} onFocus={focus} onBlur={blur}>
               <option value="" disabled>What do you need? *</option>
-              <option>Roof Inspection</option><option>Roof Repair</option><option>Roof Cleaning</option><option>Roof Restoration</option><option>Gutter Services</option><option>Not sure — need advice</option>
+              <option>Roof Inspection</option><option>Roof Repair</option><option>Roof Cleaning</option><option>Roof Restoration</option><option>Not sure — need advice</option>
             </select>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
               <div style={{ position: "relative" }}>

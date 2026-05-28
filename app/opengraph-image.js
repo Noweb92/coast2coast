@@ -37,7 +37,7 @@ export default async function OpengraphImage() {
           Roof repairs, cleaning &amp; restoration across Western Australia.
         </div>
         <div style={{ display: "flex", marginTop: 48, gap: 16 }}>
-          {["Licensed & Insured", "24/7 Emergency", "5.0★ Rated"].map((t) => (
+          {["Licensed & Insured", "Free Quotes", "5.0★ Rated"].map((t) => (
             <div key={t} style={{ display: "flex", padding: "10px 22px", border: "1px solid rgba(251,191,36,0.3)", borderRadius: 100, color: "#fbbf24", fontSize: 22 }}>{t}</div>
           ))}
         </div>

@@ -21,7 +21,6 @@ export default function StructuredData() {
     url: business.url,
     telephone: business.phoneE164,
     email: business.email,
-    foundingDate: String(business.foundedYear),
     image: `${business.url}/og-image.jpg`,
     priceRange: "$$",
     address: {

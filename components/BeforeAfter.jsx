@@ -6,6 +6,21 @@ import { C } from "@/lib/theme";
 import { images } from "@/lib/images";
 import { Fade, GoldLine, SectionLabel, SmartImage } from "@/components/ui/primitives";
 
+/**
+ * Before/after slider.
+ *
+ * Both layers use the SAME verified roof photograph; the "before" layer has a
+ * CSS filter applied that simulates a weathered, grimy roof (desaturated,
+ * darkened, slight sepia/contrast shift). The result: dragging the slider
+ * genuinely shows the same roof clean vs. dirty — the effect actually works.
+ *
+ * When real before/after job photos become available, swap them in via two
+ * separate `images.beforeAfterBefore` / `images.beforeAfterAfter` entries
+ * and remove the `imgStyle` filter on the before layer.
+ */
+const BEFORE_FILTER =
+  "grayscale(0.55) contrast(0.92) brightness(0.72) sepia(0.18) saturate(0.7)";
+
 export default function BeforeAfter() {
   const [pos, setPos] = useState(50);
   const containerRef = useRef(null);
@@ -38,6 +53,8 @@ export default function BeforeAfter() {
     if (e.key === "ArrowRight") setPos((p) => Math.min(95, p + 4));
   };
 
+  const roof = images.beforeAfterRoof;
+
   return (
     <section style={{ padding: "110px 28px", background: C.warmLight }}>
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
@@ -53,7 +70,7 @@ export default function BeforeAfter() {
           <div
             ref={containerRef}
             role="slider"
-            aria-label="Before and after comparison"
+            aria-label="Before and after roof comparison"
             aria-valuemin={5}
             aria-valuemax={95}
             aria-valuenow={Math.round(pos)}
@@ -63,14 +80,20 @@ export default function BeforeAfter() {
             onMouseDown={(e) => { dragging.current = true; handleMove(e.clientX); }}
             onTouchStart={(e) => { dragging.current = true; handleMove(e.touches[0].clientX); }}
           >
-            {/* After (full width) */}
-            <SmartImage image={images.beforeAfterAfter} style={{ position: "absolute", inset: 0 }}>
+            {/* AFTER — the same roof, untouched (clean & vibrant) */}
+            <SmartImage image={roof} style={{ position: "absolute", inset: 0 }}>
               <span style={{ position: "absolute", bottom: 16, right: 16, background: "rgba(34,197,94,0.85)", color: "#fff", padding: "5px 14px", borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: "0.5px" }}>AFTER</span>
             </SmartImage>
-            {/* Before (clipped) */}
+            {/* BEFORE — same roof, clipped by slider, with a "weathered" filter */}
             <div style={{ position: "absolute", inset: 0, clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
-              <SmartImage image={images.beforeAfterBefore} style={{ position: "absolute", inset: 0 }} overlay overlayStrength={0.2}>
-                <span style={{ position: "absolute", bottom: 16, left: 16, background: "rgba(0,0,0,0.6)", color: "#fff", padding: "5px 14px", borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: "0.5px" }}>BEFORE</span>
+              <SmartImage
+                image={roof}
+                style={{ position: "absolute", inset: 0 }}
+                imgStyle={{ filter: BEFORE_FILTER }}
+                overlay
+                overlayStrength={0.25}
+              >
+                <span style={{ position: "absolute", bottom: 16, left: 16, background: "rgba(0,0,0,0.65)", color: "#fff", padding: "5px 14px", borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: "0.5px" }}>BEFORE</span>
               </SmartImage>
             </div>
             {/* Slider handle */}
@@ -83,7 +106,6 @@ export default function BeforeAfter() {
               </div>
             </div>
           </div>
-          <p style={{ textAlign: "center", color: C.textDim, fontSize: 12, marginTop: 14, fontStyle: "italic" }}>Swap these with your own before/after job photos in <code>lib/images.js</code>.</p>
         </Fade>
       </div>
     </section>

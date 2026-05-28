@@ -9,14 +9,12 @@ import { Fade, GoldLine, SectionLabel, SmartImage, useInView, useCounter } from 
 export default function Hero() {
   const [ref, vis] = useInView(0.1);
   const c1 = useCounter(business.stats.roofsCompleted, 2000, vis);
-  const c2 = useCounter(business.stats.yearsExperience, 1500, vis);
   const c3 = useCounter(business.stats.satisfactionRate, 1800, vis);
 
   const stats = [
     [c1, "+", "Roofs completed"],
-    [c2, "+", "Years experience"],
     [c3, "%", "Satisfaction rate"],
-    ["24/7", "", "Emergency service"],
+    [business.stats.googleRating.toFixed(1), "★", "Google rating"],
   ];
 
   return (

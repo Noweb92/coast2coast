@@ -11,7 +11,6 @@ const IMAGE_BY_ID = {
   repairs: images.serviceRepairs,
   cleaning: images.serviceCleaning,
   restoration: images.serviceRestoration,
-  gutters: images.serviceGutters,
 };
 
 export default function Services() {
@@ -23,7 +22,7 @@ export default function Services() {
         <Fade>
           <GoldLine dark={false} /><SectionLabel dark={false}>SERVICES</SectionLabel>
           <h2 style={{ color: C.textDark, fontSize: "clamp(28px, 4vw, 46px)", fontWeight: 800, letterSpacing: "-2px", margin: "12px 0 14px" }}>What we do.</h2>
-          <p style={{ color: C.textDarkMuted, fontSize: 15, lineHeight: 1.7, maxWidth: 440, margin: "0 0 56px" }}>Four core services, one standard of excellence.</p>
+          <p style={{ color: C.textDarkMuted, fontSize: 15, lineHeight: 1.7, maxWidth: 440, margin: "0 0 56px" }}>Three core services, one standard of excellence.</p>
         </Fade>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(255px, 1fr))", gap: 16 }}>
           {services.map((s, i) => {

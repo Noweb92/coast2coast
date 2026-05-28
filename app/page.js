@@ -5,7 +5,6 @@ import { C } from "@/lib/theme";
 
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollProgress from "@/components/ScrollProgress";
-import PromoBanner from "@/components/PromoBanner";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Services from "@/components/Services";
@@ -13,7 +12,6 @@ import TrustBadges from "@/components/TrustBadges";
 import Process from "@/components/Process";
 import BeforeAfter from "@/components/BeforeAfter";
 import BookInspection from "@/components/BookInspection";
-import Gallery from "@/components/Gallery";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
 import Areas from "@/components/Areas";
@@ -28,7 +26,6 @@ export default function Home() {
     <div style={{ background: C.dark, color: C.textWhite }}>
       {!loaded && <LoadingScreen onDone={() => setLoaded(true)} />}
       <ScrollProgress />
-      <PromoBanner />
       <Navbar />
       <main>
         <Hero />
@@ -37,7 +34,6 @@ export default function Home() {
         <Process />
         <BeforeAfter />
         <BookInspection />
-        <Gallery />
         <Testimonials />
         <FAQ />
         <Areas />

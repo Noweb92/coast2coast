@@ -36,7 +36,7 @@ export default function Contact() {
     { icon: <Phone size={17} />, label: "CALL", value: business.phoneDisplay, href: `tel:${business.phoneE164}` },
     { icon: <Mail size={17} />, label: "EMAIL", value: business.email, href: `mailto:${business.email}` },
     { icon: <MapPin size={17} />, label: "BASED IN", value: addressLine() || `${business.address.suburb}, ${business.address.state}` },
-    { icon: <Clock size={17} />, label: "HOURS", value: `${business.hours.weekdays} · ${business.hours.emergency}` },
+    { icon: <Clock size={17} />, label: "HOURS", value: `${business.hours.weekdays} · ${business.hours.saturday}` },
   ];
 
   return (
@@ -46,7 +46,7 @@ export default function Contact() {
           <Fade>
             <GoldLine dark={false} /><SectionLabel dark={false}>CONTACT</SectionLabel>
             <h2 style={{ color: C.textDark, fontSize: "clamp(28px, 4vw, 42px)", fontWeight: 800, letterSpacing: "-2px", margin: "12px 0 14px", lineHeight: 1.1 }}>Get your<br />free quote.</h2>
-            <p style={{ color: C.textDarkMuted, fontSize: 15, lineHeight: 1.8, margin: "0 0 36px" }}>Tell us about your roof. We respond within 24 hours. Emergency? Call us directly.</p>
+            <p style={{ color: C.textDarkMuted, fontSize: 15, lineHeight: 1.8, margin: "0 0 36px" }}>Tell us about your roof and we&apos;ll get back to you within 24 hours with an honest, itemised quote.</p>
             <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
               {contactRows.map((c, i) => (
                 <div key={i} style={{ display: "flex", alignItems: "center", gap: 14 }}>
@@ -68,7 +68,7 @@ export default function Contact() {
               <input aria-label="Email" placeholder="Email *" required type="email" value={form.email} onChange={upd("email")} style={{ ...inp, marginBottom: 10 }} onFocus={focus} onBlur={blur} />
               <select aria-label="Service" value={form.service} onChange={upd("service")} style={{ ...inp, marginBottom: 10, color: form.service ? C.textWhite : C.textDim, appearance: "none", backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%2378716c' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E")`, backgroundRepeat: "no-repeat", backgroundPosition: "right 14px center" }} onFocus={focus} onBlur={blur}>
                 <option value="" disabled>Select a service</option>
-                <option>Roof Repairs</option><option>Roof Cleaning</option><option>Roof Restoration</option><option>Gutter Services</option><option>Other</option>
+                <option>Roof Repairs</option><option>Roof Cleaning</option><option>Roof Restoration</option><option>Other</option>
               </select>
               <textarea aria-label="Message" placeholder="Tell us about your roof..." rows={4} value={form.message} onChange={upd("message")} style={{ ...inp, marginBottom: 18, resize: "vertical" }} onFocus={focus} onBlur={blur} />
               <button type="submit" style={{ width: "100%", padding: "15px", background: C.gold, color: C.dark, border: "none", borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.5px", transition: "all 0.3s" }}
