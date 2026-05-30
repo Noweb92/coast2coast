@@ -55,17 +55,21 @@ coast2coast/
 │   ├── manifest.js            # generated /manifest.webmanifest (PWA)
 │   ├── opengraph-image.js     # auto-generated 1200×630 social share image
 │   └── twitter-image.js       # reuses the OG image for X/Twitter
+│   └── api/
+│       ├── quote/route.js     # POST endpoint for the "Get a free quote" form
+│       └── inspection/route.js # POST endpoint for the "Book an inspection" form
 ├── components/
 │   ├── ui/primitives.jsx      # hooks, Fade, Icon registry, SmartImage
 │   ├── Navbar.jsx  Hero.jsx  Services.jsx  TrustBadges.jsx  Process.jsx
-│   ├── BeforeAfter.jsx  BookInspection.jsx  Gallery.jsx  Testimonials.jsx
+│   ├── BeforeAfter.jsx  BookInspection.jsx  Testimonials.jsx
 │   ├── FAQ.jsx  Areas.jsx  Contact.jsx  Footer.jsx
-│   ├── PromoBanner.jsx  ScrollProgress.jsx  LoadingScreen.jsx  FloatingCTA.jsx
+│   ├── ScrollProgress.jsx  LoadingScreen.jsx  FloatingCTA.jsx
 │   └── StructuredData.jsx     # schema.org JSON-LD (LocalBusiness, FAQ, etc.)
 ├── lib/
 │   ├── site.config.js         # ⭐ single source of truth for all content
 │   ├── theme.js               # design tokens (colours, spacing, radius)
-│   └── images.js              # photography map + alt text + fallbacks
+│   ├── images.js              # photography map + alt text + fallbacks
+│   └── email.js               # Resend helper used by the API routes
 ├── public/
 │   └── icon.svg               # favicon / app icon
 ├── next.config.js             # image domains, security headers
@@ -91,7 +95,38 @@ the homepage in Google's [Rich Results Test](https://search.google.com/test/rich
 
 ---
 
+## Lead emails (contact forms)
+
+Both forms POST JSON to internal API routes (`/api/quote`, `/api/inspection`)
+which validate, screen for spam (hidden honeypot field + server-side checks)
+and forward a formatted notification to the business via [Resend](https://resend.com).
+
+**Setup (one-time):**
+
+1. Create a free Resend account at <https://resend.com> and copy an API key.
+2. Copy `.env.example` to `.env.local` (for local dev) and add the same keys to
+   Vercel → Project Settings → Environment Variables (for production):
+
+   ```
+   RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxx
+   LEAD_NOTIFY_TO=info@coast2coastroofing.com.au
+   ```
+
+3. Until the domain is verified in Resend, leads are sent from
+   `onboarding@resend.dev`. To send from `quotes@coast2coastroofing.com.au`
+   instead, verify the domain at <https://resend.com/domains>, then set:
+
+   ```
+   RESEND_FROM="Coast2Coast Roofing <quotes@coast2coastroofing.com.au>"
+   ```
+
+The customer's email is set as the `Reply-To` header, so simply replying to
+the notification gets you straight back to the lead.
+
+---
+
 ## Deployment
 
 Optimised for **Vercel**. Push to a Git repo and import it, or use the Vercel
-CLI (`vercel`). No environment variables are required for the static site.
+CLI (`vercel`). Set the environment variables above in the Vercel dashboard
+before launching — without them the contact forms return a 502.

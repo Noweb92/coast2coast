@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { Phone, Mail, MapPin, Clock, CheckCircle } from "lucide-react";
+import { Phone, Mail, MapPin, Clock, CheckCircle, AlertCircle } from "lucide-react";
 import { C } from "@/lib/theme";
 import { business } from "@/lib/site.config";
 import { Fade, GoldLine, SectionLabel } from "@/components/ui/primitives";
 
 const inp = { width: "100%", padding: "13px 16px", borderRadius: 8, border: `1px solid ${C.border}`, background: C.darkSoft, color: C.textWhite, fontSize: 14, fontFamily: "inherit", outline: "none", transition: "border-color 0.2s", boxSizing: "border-box" };
+// Hidden honeypot field — bots fill it in, humans never see it.
+const honeypotStyle = { position: "absolute", left: "-10000px", top: "auto", width: 1, height: 1, overflow: "hidden", opacity: 0 };
 
 function addressLine() {
   const a = business.address;
@@ -14,11 +16,37 @@ function addressLine() {
 }
 
 export default function Contact() {
-  const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "" });
+  const [form, setForm] = useState({ name: "", email: "", phone: "", service: "", message: "", website: "" });
   const [sent, setSent] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const upd = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const focus = (e) => (e.target.style.borderColor = C.goldDark);
   const blur = (e) => (e.target.style.borderColor = C.border);
+
+  async function onSubmit(e) {
+    e.preventDefault();
+    if (loading) return;
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/quote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data?.ok) {
+        setError(data?.error || "Something went wrong. Please try again or call us.");
+        setLoading(false);
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("Network error. Please check your connection and try again.");
+      setLoading(false);
+    }
+  }
 
   if (sent) {
     return (
@@ -60,7 +88,13 @@ export default function Contact() {
             </div>
           </Fade>
           <Fade delay={0.15}>
-            <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} style={{ background: C.darkCard, borderRadius: 14, padding: 30, border: `1px solid ${C.border}` }}>
+            <form onSubmit={onSubmit} noValidate style={{ background: C.darkCard, borderRadius: 14, padding: 30, border: `1px solid ${C.border}` }}>
+              {/* Honeypot — keep first, hidden from sighted + screen-reader users */}
+              <div aria-hidden="true" style={honeypotStyle}>
+                <label>Website (leave empty)
+                  <input tabIndex={-1} autoComplete="off" name="website" value={form.website} onChange={upd("website")} />
+                </label>
+              </div>
               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 10 }}>
                 <input aria-label="Name" placeholder="Name *" required value={form.name} onChange={upd("name")} style={inp} onFocus={focus} onBlur={blur} />
                 <input aria-label="Phone" placeholder="Phone *" required type="tel" value={form.phone} onChange={upd("phone")} style={inp} onFocus={focus} onBlur={blur} />
@@ -71,10 +105,16 @@ export default function Contact() {
                 <option>Roof Repairs</option><option>Roof Cleaning</option><option>Roof Restoration</option><option>Other</option>
               </select>
               <textarea aria-label="Message" placeholder="Tell us about your roof..." rows={4} value={form.message} onChange={upd("message")} style={{ ...inp, marginBottom: 18, resize: "vertical" }} onFocus={focus} onBlur={blur} />
-              <button type="submit" style={{ width: "100%", padding: "15px", background: C.gold, color: C.dark, border: "none", borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.5px", transition: "all 0.3s" }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = C.goldLight; e.currentTarget.style.transform = "translateY(-1px)"; }}
-                onMouseLeave={(e) => { e.currentTarget.style.background = C.gold; e.currentTarget.style.transform = "translateY(0)"; }}>
-                SEND QUOTE REQUEST
+              {error && (
+                <div role="alert" style={{ display: "flex", gap: 8, alignItems: "flex-start", background: "rgba(220,38,38,0.08)", border: "1px solid rgba(220,38,38,0.25)", borderRadius: 8, padding: "10px 12px", marginBottom: 12 }}>
+                  <AlertCircle size={16} color="#f87171" style={{ flexShrink: 0, marginTop: 1 }} />
+                  <p style={{ color: "#fca5a5", fontSize: 12.5, margin: 0, lineHeight: 1.5 }}>{error}</p>
+                </div>
+              )}
+              <button type="submit" disabled={loading} style={{ width: "100%", padding: "15px", background: loading ? C.goldDark : C.gold, color: C.dark, border: "none", borderRadius: 8, fontWeight: 700, fontSize: 14, cursor: loading ? "wait" : "pointer", fontFamily: "inherit", letterSpacing: "0.5px", transition: "all 0.3s", opacity: loading ? 0.85 : 1 }}
+                onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.background = C.goldLight; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+                onMouseLeave={(e) => { if (!loading) { e.currentTarget.style.background = C.gold; e.currentTarget.style.transform = "translateY(0)"; } }}>
+                {loading ? "SENDING…" : "SEND QUOTE REQUEST"}
               </button>
               <p style={{ color: C.textDim, fontSize: 11, textAlign: "center", margin: "12px 0 0" }}>We respond within 24 hours. Your info is never shared.</p>
             </form>
