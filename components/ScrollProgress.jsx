@@ -6,13 +6,18 @@ import { C } from "@/lib/theme";
 export default function ScrollProgress() {
   const [pct, setPct] = useState(0);
   useEffect(() => {
-    const h = () => {
+    let ticking = false;
+    const compute = () => {
+      ticking = false;
       const d = document.documentElement;
       const max = d.scrollHeight - d.clientHeight;
       setPct(max > 0 ? Math.round((d.scrollTop / max) * 100) : 0);
     };
+    const h = () => {
+      if (!ticking) { ticking = true; requestAnimationFrame(compute); }
+    };
     window.addEventListener("scroll", h, { passive: true });
-    h();
+    compute();
     return () => window.removeEventListener("scroll", h);
   }, []);
   return (

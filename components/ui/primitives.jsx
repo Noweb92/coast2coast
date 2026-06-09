@@ -6,6 +6,7 @@
  */
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import {
   Wrench, Droplets, Home, Sparkles, Shield, Calculator, Award,
   BadgeCheck, FileCheck, Users, Star, Clock,
@@ -102,9 +103,12 @@ export function SectionLabel({ children, dark = true }) {
 /**
  * SmartImage — resilient image with graceful brand fallback.
  *
- * Renders a real photo (lazy-loaded, async-decoded). If the photo fails to
- * load (404, network, blocked CDN), it swaps to a branded gradient so the
- * layout always looks intentional. Use `overlay` to darken photos for text.
+ * Wraps next/image (responsive srcset, automatic AVIF/WebP, lazy by default)
+ * for real bandwidth savings on mobile. If the photo fails to load (404,
+ * network, blocked CDN), it swaps to a branded gradient so the layout always
+ * looks intentional. Use `overlay` to darken photos for text. `priority`
+ * eager-loads above-the-fold images (the hero); `sizes` tells the browser how
+ * wide the image renders so it can pick the smallest sufficient source.
  */
 export function SmartImage({
   image,
@@ -113,6 +117,7 @@ export function SmartImage({
   overlay = false,
   overlayStrength = 0.45,
   priority = false,
+  sizes = "100vw",
   children,
 }) {
   const [failed, setFailed] = useState(false);
@@ -121,22 +126,15 @@ export function SmartImage({
   return (
     <div style={{ position: "relative", overflow: "hidden", background: fallback, ...style }}>
       {!failed && image?.src && (
-        <img
+        <Image
           src={image.src}
           alt={image.alt || ""}
-          loading={priority ? "eager" : "lazy"}
-          decoding="async"
-          fetchPriority={priority ? "high" : "auto"}
+          fill
+          sizes={sizes}
+          priority={priority}
+          quality={72}
           onError={() => setFailed(true)}
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            display: "block",
-            ...imgStyle,
-          }}
+          style={{ objectFit: "cover", ...imgStyle }}
         />
       )}
       {failed && (

@@ -27,7 +27,7 @@ export default function Home() {
       {!loaded && <LoadingScreen onDone={() => setLoaded(true)} />}
       <ScrollProgress />
       <Navbar />
-      <main>
+      <main id="main">
         <Hero />
         <Services />
         <TrustBadges />

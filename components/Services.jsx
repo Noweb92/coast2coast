@@ -39,7 +39,7 @@ export default function Services() {
                   onMouseEnter={(e) => { if (!isA) e.currentTarget.style.boxShadow = "0 10px 28px rgba(30,30,36,0.08)"; }}
                   onMouseLeave={(e) => { if (!isA) e.currentTarget.style.boxShadow = "none"; }}
                 >
-                  <SmartImage image={IMAGE_BY_ID[s.id]} style={{ height: 150 }} overlay overlayStrength={0.15}>
+                  <SmartImage image={IMAGE_BY_ID[s.id]} sizes="(max-width: 768px) 100vw, 360px" style={{ height: 150 }} overlay overlayStrength={0.15}>
                     <div style={{ position: "absolute", left: 16, bottom: 12, width: 44, height: 44, borderRadius: 10, background: "rgba(22,22,25,0.55)", backdropFilter: "blur(6px)", display: "flex", alignItems: "center", justifyContent: "center", color: C.gold }}>
                       <Icon name={s.icon} size={22} />
                     </div>

@@ -1,6 +1,16 @@
 import "./globals.css";
+import { Inter } from "next/font/google";
 import StructuredData from "@/components/StructuredData";
 import { business } from "@/lib/site.config";
+
+// Self-hosted, render-blocking-free, zero layout shift. `display: swap`
+// shows fallback text instantly; `preload` warms the hero font.
+const inter = Inter({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const metadata = {
   metadataBase: new URL(business.url),
@@ -65,16 +75,9 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-AU">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html lang="en-AU" className={inter.variable}>
       <body>
+        <a href="#main" className="skip-link">Skip to content</a>
         {children}
         <StructuredData />
       </body>

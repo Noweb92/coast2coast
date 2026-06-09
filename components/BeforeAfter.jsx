@@ -81,13 +81,14 @@ export default function BeforeAfter() {
             onTouchStart={(e) => { dragging.current = true; handleMove(e.touches[0].clientX); }}
           >
             {/* AFTER — the same roof, untouched (clean & vibrant) */}
-            <SmartImage image={roof} style={{ position: "absolute", inset: 0 }}>
+            <SmartImage image={roof} sizes="(max-width: 900px) 100vw, 900px" style={{ position: "absolute", inset: 0 }}>
               <span style={{ position: "absolute", bottom: 16, right: 16, background: "rgba(34,197,94,0.85)", color: "#fff", padding: "5px 14px", borderRadius: 100, fontSize: 12, fontWeight: 700, letterSpacing: "0.5px" }}>AFTER</span>
             </SmartImage>
             {/* BEFORE — same roof, clipped by slider, with a "weathered" filter */}
             <div style={{ position: "absolute", inset: 0, clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
               <SmartImage
                 image={roof}
+                sizes="(max-width: 900px) 100vw, 900px"
                 style={{ position: "absolute", inset: 0 }}
                 imgStyle={{ filter: BEFORE_FILTER }}
                 overlay

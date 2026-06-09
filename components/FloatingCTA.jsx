@@ -10,7 +10,12 @@ export default function FloatingCTA() {
   const [expanded, setExpanded] = useState(false);
 
   useEffect(() => {
-    const h = () => setShow(window.scrollY > 400);
+    let ticking = false;
+    const h = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { setShow(window.scrollY > 400); ticking = false; });
+    };
     window.addEventListener("scroll", h, { passive: true });
     return () => window.removeEventListener("scroll", h);
   }, []);

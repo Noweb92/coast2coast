@@ -9,19 +9,38 @@ export default function LoadingScreen({ onDone }) {
   const [hide, setHide] = useState(false);
 
   useEffect(() => {
+    // Respect users who prefer reduced motion, and never gate repeat visits
+    // behind the intro — show content instantly in those cases.
+    const reducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const seen =
+      typeof sessionStorage !== "undefined" &&
+      sessionStorage.getItem("c2c_intro_seen");
+
+    if (reducedMotion || seen) {
+      setHide(true);
+      onDone();
+      return;
+    }
+    try { sessionStorage.setItem("c2c_intro_seen", "1"); } catch {}
+
+    // Fast, single intro (~700ms) — a brand moment, not a wait.
     const timer = setInterval(() => {
       setProgress((p) => {
         if (p >= 100) {
           clearInterval(timer);
-          setTimeout(() => setHide(true), 300);
-          setTimeout(onDone, 800);
+          setTimeout(() => setHide(true), 200);
+          setTimeout(onDone, 500);
           return 100;
         }
-        return p + 2;
+        return p + 5;
       });
-    }, 30);
+    }, 28);
     return () => clearInterval(timer);
   }, [onDone]);
+
+  if (hide && progress === 0) return null; // skipped instantly — render nothing
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: C.dark, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", opacity: hide ? 0 : 1, transition: "opacity 0.5s ease", pointerEvents: hide ? "none" : "all" }}>
