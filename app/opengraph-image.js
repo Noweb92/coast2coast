@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { business } from "@/lib/site.config";
 
-export const runtime = "edge";
+// "nodejs" (not "edge") so the image is statically generated at build time.
+export const runtime = "nodejs";
 export const alt = `${business.name} — Western Australia's premium roofing specialists`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -24,7 +25,7 @@ export default async function OpengraphImage() {
         <div style={{ display: "flex", alignItems: "center", gap: 18, marginBottom: 40 }}>
           <div style={{ width: 60, height: 60, border: "3px solid #b8860b", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 30, color: "#fbbf24" }}>⌂</div>
           <div style={{ display: "flex", flexDirection: "column" }}>
-            <div style={{ fontSize: 30, fontWeight: 800, color: "#f5f5f4", letterSpacing: 4 }}>
+            <div style={{ display: "flex", fontSize: 30, fontWeight: 800, color: "#f5f5f4", letterSpacing: 4 }}>
               COAST<span style={{ color: "#fbbf24" }}>2</span>COAST
             </div>
             <div style={{ fontSize: 14, color: "#a8a29e", letterSpacing: 6 }}>ROOFING WA</div>

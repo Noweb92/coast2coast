@@ -1,26 +1,42 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { C } from "@/lib/theme";
+/**
+ * Top scroll progress bar (client island — whitelisted).
+ * rAF-throttled, passive listeners; progress is applied imperatively as a
+ * `scaleX()` transform (compositor-only — no layout, no React re-render).
+ * Static styles live in Navbar.module.css (`.progress`) — the shared
+ * top-chrome stylesheet; this component owns no module of its own.
+ */
+
+import { useEffect, useRef } from "react";
+import styles from "./Navbar.module.css";
 
 export default function ScrollProgress() {
-  const [pct, setPct] = useState(0);
+  const barRef = useRef(null);
+
   useEffect(() => {
     let ticking = false;
     const compute = () => {
       ticking = false;
       const d = document.documentElement;
       const max = d.scrollHeight - d.clientHeight;
-      setPct(max > 0 ? Math.round((d.scrollTop / max) * 100) : 0);
+      const p = max > 0 ? d.scrollTop / max : 0;
+      if (barRef.current) barRef.current.style.transform = `scaleX(${p})`;
     };
-    const h = () => {
-      if (!ticking) { ticking = true; requestAnimationFrame(compute); }
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(compute);
+      }
     };
-    window.addEventListener("scroll", h, { passive: true });
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
     compute();
-    return () => window.removeEventListener("scroll", h);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
   }, []);
-  return (
-    <div aria-hidden="true" style={{ position: "fixed", top: 0, left: 0, zIndex: 1001, height: 3, background: `linear-gradient(90deg, ${C.gold}, ${C.goldLight})`, width: `${pct}%`, transition: "width 0.05s linear" }} />
-  );
+
+  return <div ref={barRef} className={styles.progress} aria-hidden="true" />;
 }

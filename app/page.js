@@ -1,7 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import { C } from "@/lib/theme";
+/**
+ * Home — SERVER COMPONENT (contract §2).
+ *
+ * Pure assembly: no state, no client JS at the page level. Static sections
+ * render to HTML on the server; only the whitelisted islands hydrate
+ * (nav chrome, forms, slider, counters, reveal wrappers, intro veil).
+ * The LoadingScreen is a self-managing non-blocking overlay — content
+ * underneath renders and is interactive from the first byte.
+ */
 
 import LoadingScreen from "@/components/LoadingScreen";
 import ScrollProgress from "@/components/ScrollProgress";
@@ -20,11 +25,9 @@ import Footer from "@/components/Footer";
 import FloatingCTA from "@/components/FloatingCTA";
 
 export default function Home() {
-  const [loaded, setLoaded] = useState(false);
-
   return (
-    <div style={{ background: C.dark, color: C.textWhite }}>
-      {!loaded && <LoadingScreen onDone={() => setLoaded(true)} />}
+    <>
+      <LoadingScreen />
       <ScrollProgress />
       <Navbar />
       <main id="main">
@@ -41,6 +44,6 @@ export default function Home() {
       </main>
       <Footer />
       <FloatingCTA />
-    </div>
+    </>
   );
 }

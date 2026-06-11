@@ -1,9 +1,16 @@
 "use client";
 
+/**
+ * Fixed primary navigation (client island — whitelisted).
+ * - Scrolled state (rAF-throttled, passive) toggles a CSS class only.
+ * - Mobile menu at ≤768px with aria-expanded / aria-controls.
+ * - All static styling + hover states live in Navbar.module.css.
+ */
+
 import { useState, useEffect } from "react";
 import { Home, Menu, X, Phone } from "lucide-react";
-import { C } from "@/lib/theme";
 import { navLinks, business } from "@/lib/site.config";
+import styles from "./Navbar.module.css";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -11,66 +18,83 @@ export default function Navbar() {
 
   useEffect(() => {
     let ticking = false;
-    const h = () => {
+    const onScroll = () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(() => { setScrolled(window.scrollY > 60); ticking = false; });
+      requestAnimationFrame(() => {
+        setScrolled(window.scrollY > 60);
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // sync immediately (e.g. reload with restored scroll position)
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  return (
-    <nav aria-label="Primary" style={{ position: "fixed", top: 3, left: 0, right: 0, zIndex: 1000, background: scrolled ? "rgba(30,30,36,0.97)" : "transparent", backdropFilter: scrolled ? "blur(16px)" : "none", borderBottom: scrolled ? `1px solid ${C.border}` : "1px solid transparent", transition: "all 0.4s ease", padding: scrolled ? "12px 0" : "22px 0" }}>
-      <div style={{ maxWidth: 1140, margin: "0 auto", padding: "0 28px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <a href="#hero" aria-label="Coast2Coast Roofing home" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-          <div style={{ width: 36, height: 36, border: `1.5px solid ${C.goldDark}`, borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <Home size={17} color={C.gold} />
-          </div>
-          <div>
-            <div style={{ color: C.textWhite, fontWeight: 700, fontSize: 15, letterSpacing: "2.5px" }}>COAST<span style={{ color: C.gold }}>2</span>COAST</div>
-            <div style={{ color: C.textDim, fontSize: 8, letterSpacing: "3px" }}>ROOFING WA</div>
-          </div>
-        </a>
+  const close = () => setOpen(false);
 
-        <div className="nav-desk" style={{ gap: 28, alignItems: "center" }}>
-          {navLinks.map((l) => (
-            <a key={l.label} href={l.href} style={{ color: C.textMuted, textDecoration: "none", fontSize: 13, fontWeight: 500, letterSpacing: "0.3px", transition: "color 0.2s" }}
-              onMouseEnter={(e) => (e.target.style.color = C.gold)}
-              onMouseLeave={(e) => (e.target.style.color = C.textMuted)}>
-              {l.label}
+  return (
+    <header className={scrolled ? `${styles.header} ${styles.scrolled}` : styles.header}>
+      <nav aria-label="Primary">
+        <div className={styles.inner}>
+          <a href="#hero" aria-label="Coast2Coast Roofing home" className={styles.brand}>
+            <span className={styles.brandMark} aria-hidden="true">
+              <Home size={17} />
+            </span>
+            <span>
+              <span className={styles.brandName}>
+                COAST<span className={styles.gold}>2</span>COAST
+              </span>
+              <span className={styles.brandSub}>ROOFING WA</span>
+            </span>
+          </a>
+
+          <div className={styles.desk}>
+            {navLinks.map((l) => (
+              <a key={l.label} href={l.href} className={styles.link}>
+                {l.label}
+              </a>
+            ))}
+            <a href={`tel:${business.phoneE164}`} className={styles.phone}>
+              <Phone size={14} className={styles.phoneIcon} aria-hidden="true" />
+              {business.phoneDisplay}
             </a>
-          ))}
-          <a href={`tel:${business.phoneE164}`} style={{ color: C.textLight, textDecoration: "none", fontSize: 13, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 7 }}>
-            <Phone size={14} color={C.gold} /> {business.phoneDisplay}
-          </a>
-          <a href="#contact" style={{ background: "transparent", border: `1.5px solid ${C.gold}`, color: C.gold, padding: "9px 24px", borderRadius: 6, textDecoration: "none", fontWeight: 600, fontSize: 12, letterSpacing: "1px", transition: "all 0.3s" }}
-            onMouseEnter={(e) => { e.target.style.background = C.gold; e.target.style.color = C.dark; }}
-            onMouseLeave={(e) => { e.target.style.background = "transparent"; e.target.style.color = C.gold; }}>
-            GET QUOTE
-          </a>
+            <a href="#contact" className={styles.cta}>
+              GET QUOTE
+            </a>
+          </div>
+
+          <button
+            type="button"
+            className={styles.mobBtn}
+            aria-label={open ? "Close menu" : "Open menu"}
+            aria-expanded={open}
+            aria-controls="primary-mobile-menu"
+            onClick={() => setOpen((o) => !o)}
+          >
+            {open ? <X size={26} /> : <Menu size={26} />}
+          </button>
         </div>
 
-        <button className="nav-mob-btn" aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open} onClick={() => setOpen(!open)} style={{ background: "none", border: "none", color: C.textWhite, cursor: "pointer", lineHeight: 0 }}>
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
-      </div>
-
-      {open && (
-        <div className="nav-mob-menu" style={{ background: C.darkDeep, padding: "20px 28px", borderTop: `1px solid ${C.border}` }}>
+        {/* Always mounted so aria-controls resolves; shown via class at ≤768px. */}
+        <div
+          id="primary-mobile-menu"
+          className={open ? `${styles.mobMenu} ${styles.menuOpen}` : styles.mobMenu}
+        >
           {navLinks.map((l) => (
-            <a key={l.label} href={l.href} onClick={() => setOpen(false)} style={{ display: "block", color: C.textMuted, textDecoration: "none", fontSize: 15, fontWeight: 500, padding: "12px 0", borderBottom: `1px solid ${C.border}` }}>
+            <a key={l.label} href={l.href} onClick={close} className={styles.mobLink}>
               {l.label}
             </a>
           ))}
-          <a href={`tel:${business.phoneE164}`} onClick={() => setOpen(false)} style={{ display: "flex", alignItems: "center", gap: 8, color: C.textLight, textDecoration: "none", fontSize: 15, fontWeight: 600, padding: "14px 0" }}>
-            <Phone size={16} color={C.gold} /> {business.phoneDisplay}
+          <a href={`tel:${business.phoneE164}`} onClick={close} className={styles.mobPhone}>
+            <Phone size={16} className={styles.phoneIcon} aria-hidden="true" />
+            {business.phoneDisplay}
           </a>
-          <a href="#contact" onClick={() => setOpen(false)} style={{ display: "block", background: C.gold, color: C.dark, padding: "14px", borderRadius: 6, textDecoration: "none", fontWeight: 700, fontSize: 14, textAlign: "center", marginTop: 6, letterSpacing: "1px" }}>
+          <a href="#contact" onClick={close} className={styles.mobCta}>
             GET FREE QUOTE
           </a>
         </div>
-      )}
-    </nav>
+      </nav>
+    </header>
   );
 }

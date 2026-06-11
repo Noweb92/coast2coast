@@ -1,0 +1,117 @@
+/* ── Services — three core offerings on the warm light surface ── */
+
+.section {
+  padding: var(--section-y) var(--pad-x);
+  background: var(--warm);
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.head {
+  margin-bottom: 56px;
+}
+
+/* Card grid */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Stretch cards to equal height within a row */
+.cell {
+  display: flex;
+}
+
+/* White panel that lifts on hover — pure CSS, zero JS */
+.card {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid var(--border-light);
+  background: var(--white);
+  transition:
+    transform 0.4s var(--ease),
+    box-shadow 0.4s var(--ease),
+    border-color 0.4s var(--ease);
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: var(--gold-border);
+  box-shadow: var(--shadow-card);
+}
+
+/* Blurred icon chip floating over the photo */
+.chip {
+  position: absolute;
+  left: 16px;
+  bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: rgba(22, 22, 25, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  color: var(--gold);
+}
+
+.body {
+  flex: 1;
+  padding: 24px;
+}
+
+.title {
+  margin: 0 0 8px;
+  color: var(--text-dark);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.desc {
+  margin: 0 0 16px;
+  color: var(--text-dark-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Always-visible feature list */
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-dark-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.check {
+  flex-shrink: 0;
+  color: var(--gold-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    transition: none;
+  }
+}

@@ -1,0 +1,85 @@
+/* ── TrustBadges — credibility strip on the soft dark surface ── */
+
+.section {
+  position: relative;
+  padding: 60px var(--pad-x);
+  background: var(--dark-soft);
+}
+
+/* Hairline gold seam along the top edge */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--gold-dark) 25%, transparent),
+    transparent
+  );
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Stretch badges to equal height within a row */
+.cell {
+  display: flex;
+}
+
+.badge {
+  flex: 1;
+  padding: 24px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--dark-card);
+  text-align: center;
+  transition:
+    transform 0.3s var(--ease),
+    border-color 0.3s var(--ease);
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+  border-color: var(--gold-border);
+}
+
+.icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  color: var(--gold);
+}
+
+.title {
+  margin-bottom: 4px;
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.desc {
+  color: var(--text-muted); /* AA on --dark-card (5.64:1) */
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .badge {
+    transition: none;
+  }
+}

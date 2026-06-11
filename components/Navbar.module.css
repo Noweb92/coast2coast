@@ -1,0 +1,224 @@
+/* ───────────────────────────────────────────────────────────
+   Top chrome — Navbar + ScrollProgress bar.
+   `.progress` lives here (ScrollProgress.jsx owns no module of
+   its own) because the two are coupled: the fixed header sits at
+   top:3px precisely so the 3px progress bar never overlaps it.
+   Tokens: app/globals.css :root — docs/ARCHITECTURE.md §3.
+   ─────────────────────────────────────────────────────────── */
+
+/* ── Scroll progress bar (imported by ScrollProgress.jsx) ── */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-light));
+  transform: scaleX(0); /* driven imperatively at rAF rate — no layout, no paint */
+  transform-origin: 0 50%;
+  pointer-events: none;
+}
+
+/* ── Fixed header shell ────────────────────────────────────── */
+.header {
+  position: fixed;
+  top: 3px; /* clears the 3px scroll-progress bar */
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  padding: 22px 0;
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  transition: background 0.4s ease, border-color 0.4s ease, padding 0.4s ease;
+}
+.scrolled {
+  padding: 12px 0;
+  background: rgba(30, 30, 36, 0.97);
+  border-bottom-color: var(--border);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+  padding: 0 var(--pad-x);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ── Brand lockup ──────────────────────────────────────────── */
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+}
+.brandMark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid var(--gold-dark);
+  border-radius: 7px;
+  color: var(--gold);
+}
+.brandName {
+  display: block;
+  color: var(--text-white);
+  font-weight: 700;
+  font-size: 15px;
+  letter-spacing: 2.5px;
+  line-height: 1.3;
+}
+.brandSub {
+  display: block;
+  color: var(--text-dim);
+  font-size: 8px;
+  letter-spacing: 3px;
+  line-height: 1.4;
+}
+.gold {
+  color: var(--gold);
+}
+
+/* ── Desktop links ─────────────────────────────────────────── */
+.desk {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+.link {
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease;
+}
+.link:hover {
+  color: var(--gold);
+}
+.phone {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+}
+.phone:hover {
+  color: var(--text-white);
+}
+.phoneIcon {
+  color: var(--gold);
+  flex: none;
+}
+.cta {
+  padding: 9px 24px;
+  background: transparent;
+  border: 1.5px solid var(--gold);
+  border-radius: var(--radius-sm);
+  color: var(--gold);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 1px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+.cta:hover {
+  background: var(--gold);
+  color: var(--dark);
+}
+
+/* ── Mobile toggle + menu (≤768px) ─────────────────────────── */
+.mobBtn {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-white);
+  cursor: pointer;
+  line-height: 0;
+  /* padding grows the tap target to ~42px without shifting layout */
+  padding: 8px;
+  margin: -8px;
+}
+
+.mobMenu {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desk {
+    display: none;
+  }
+  .mobBtn {
+    display: block;
+  }
+  .mobMenu.menuOpen {
+    display: block;
+    background: var(--dark-deep);
+    padding: 20px 28px;
+    border-top: 1px solid var(--border);
+    animation: menuIn 0.25s var(--ease);
+  }
+}
+
+.mobLink {
+  display: block;
+  color: var(--text-muted);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+  transition: color 0.2s ease;
+}
+.mobLink:hover {
+  color: var(--gold);
+}
+.mobPhone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 14px 0;
+}
+.mobCta {
+  display: block;
+  margin-top: 6px;
+  padding: 14px;
+  background: var(--gold);
+  border-radius: var(--radius-sm);
+  color: var(--dark);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mobMenu.menuOpen {
+    animation: none;
+  }
+}

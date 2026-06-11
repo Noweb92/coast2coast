@@ -1,9 +1,16 @@
 "use client";
 
+/**
+ * Floating phone/quote bubble (client island — whitelisted).
+ * Appears after 400px of scroll (rAF-throttled, passive listener);
+ * expands into a small contact panel. All static styling + hover
+ * states live in FloatingCTA.module.css.
+ */
+
 import { useState, useEffect } from "react";
 import { Phone, Mail, X, MessageCircle } from "lucide-react";
-import { C } from "@/lib/theme";
 import { business } from "@/lib/site.config";
+import styles from "./FloatingCTA.module.css";
 
 export default function FloatingCTA() {
   const [show, setShow] = useState(false);
@@ -11,48 +18,54 @@ export default function FloatingCTA() {
 
   useEffect(() => {
     let ticking = false;
-    const h = () => {
+    const onScroll = () => {
       if (ticking) return;
       ticking = true;
-      requestAnimationFrame(() => { setShow(window.scrollY > 400); ticking = false; });
+      requestAnimationFrame(() => {
+        setShow(window.scrollY > 400);
+        ticking = false;
+      });
     };
-    window.addEventListener("scroll", h, { passive: true });
-    return () => window.removeEventListener("scroll", h);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    onScroll(); // sync immediately (e.g. reload with restored scroll position)
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   if (!show) return null;
 
   return (
-    <div style={{ position: "fixed", bottom: 24, right: 24, zIndex: 997, display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10 }}>
+    // Button first in the DOM (disclosure pattern: content follows its
+    // trigger in tab order); column-reverse keeps the panel visually above.
+    <div className={styles.root}>
+      <button
+        type="button"
+        className={styles.bubble}
+        onClick={() => setExpanded((e) => !e)}
+        aria-label={expanded ? "Close contact options" : "Open contact options"}
+        aria-expanded={expanded}
+        aria-controls="floating-contact-panel"
+      >
+        {expanded ? <X size={22} /> : <MessageCircle size={22} />}
+      </button>
       {expanded && (
-        <div style={{ background: C.darkCard, border: `1px solid ${C.border}`, borderRadius: 14, padding: 20, width: 230, animation: "fadeUp 0.3s ease", boxShadow: "0 12px 40px rgba(0,0,0,0.4)" }}>
-          <p style={{ color: C.textWhite, fontSize: 14, fontWeight: 700, margin: "0 0 12px" }}>Need help?</p>
-          <a href={`tel:${business.phoneE164}`} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: C.goldMuted, border: `1px solid ${C.goldBorder}`, borderRadius: 8, textDecoration: "none", marginBottom: 8, transition: "background 0.2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(251,191,36,0.15)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = C.goldMuted)}>
-            <Phone size={16} color={C.gold} />
-            <div>
-              <div style={{ color: C.textWhite, fontSize: 13, fontWeight: 600 }}>Call us</div>
-              <div style={{ color: C.textDim, fontSize: 11 }}>{business.phoneDisplay}</div>
-            </div>
+        <div id="floating-contact-panel" className={styles.panel}>
+          <p className={styles.panelTitle}>Need help?</p>
+          <a href={`tel:${business.phoneE164}`} className={styles.option}>
+            <Phone size={16} className={styles.optionIcon} aria-hidden="true" />
+            <span className={styles.optionText}>
+              <span className={styles.optionLabel}>Call us</span>
+              <span className={styles.optionSub}>{business.phoneDisplay}</span>
+            </span>
           </a>
-          <a href="#contact" onClick={() => setExpanded(false)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: C.goldMuted, border: `1px solid ${C.goldBorder}`, borderRadius: 8, textDecoration: "none", transition: "background 0.2s" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(251,191,36,0.15)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = C.goldMuted)}>
-            <Mail size={16} color={C.gold} />
-            <div>
-              <div style={{ color: C.textWhite, fontSize: 13, fontWeight: 600 }}>Free quote</div>
-              <div style={{ color: C.textDim, fontSize: 11 }}>Response in 24h</div>
-            </div>
+          <a href="#contact" onClick={() => setExpanded(false)} className={styles.option}>
+            <Mail size={16} className={styles.optionIcon} aria-hidden="true" />
+            <span className={styles.optionText}>
+              <span className={styles.optionLabel}>Free quote</span>
+              <span className={styles.optionSub}>Response in 24h</span>
+            </span>
           </a>
         </div>
       )}
-      <button onClick={() => setExpanded(!expanded)} aria-label={expanded ? "Close contact options" : "Open contact options"} aria-expanded={expanded}
-        style={{ width: 56, height: 56, borderRadius: "50%", background: C.gold, border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 20px rgba(251,191,36,0.35)", transition: "transform 0.3s", animation: "pulseGold 2s ease infinite" }}
-        onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-        onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}>
-        {expanded ? <X size={22} color={C.dark} /> : <MessageCircle size={22} color={C.dark} />}
-      </button>
     </div>
   );
 }

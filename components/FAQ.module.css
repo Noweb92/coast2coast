@@ -1,0 +1,115 @@
+/* ── FAQ: light warm section, native <details> accordion ── */
+
+.section {
+  padding: var(--section-y) var(--pad-x);
+  background: var(--warm);
+}
+
+.inner {
+  max-width: 760px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 48px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Accordion item */
+.item {
+  background: var(--white);
+  border: 1px solid var(--border-light);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: border-color 0.3s var(--ease);
+}
+
+.item:not([open]):hover {
+  border-color: var(--gold-border);
+}
+
+.item[open] {
+  border-color: var(--gold-border);
+}
+
+/* Question row — replaces the legacy button, keeps its typography */
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 22px;
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+/* The global focus ring is drawn outside the border box and would be
+   clipped by .item's overflow:hidden — pull it inside instead. */
+.summary:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: -4px;
+  border-radius: 10px;
+}
+
+.question {
+  color: var(--text-dark);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.chevron {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  transition: transform 0.3s var(--ease), color 0.3s var(--ease);
+}
+
+.item[open] .chevron {
+  transform: rotate(180deg);
+  color: var(--gold);
+}
+
+/* Answer — in the HTML even when closed; fades/slides in on open.
+   (Height is not animated — the browser snaps it open, the content eases.) */
+.answer {
+  margin: 0;
+  padding: 0 22px 18px;
+  color: var(--text-dark-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.item[open] .answer {
+  animation: answer-in 0.45s var(--ease) both;
+}
+
+@keyframes answer-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .item,
+  .chevron {
+    transition: none;
+  }
+  .item[open] .answer {
+    animation: none;
+  }
+}

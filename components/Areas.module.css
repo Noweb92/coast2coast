@@ -1,0 +1,89 @@
+/* ── Areas: dark-soft coverage section with pill list ── */
+
+.section {
+  position: relative;
+  padding: var(--section-y) var(--pad-x);
+  background: var(--dark-soft);
+}
+
+/* Gold hairline along the top edge (legacy: goldDark @ 25%) */
+.hairline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(184, 134, 11, 0.25),
+    transparent
+  );
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 44px;
+}
+
+/* Pill list */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pill {
+  padding: 10px 22px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: default;
+  transition:
+    border-color 0.3s var(--ease),
+    color 0.3s var(--ease),
+    background-color 0.3s var(--ease);
+}
+
+.pill:hover {
+  border-color: var(--gold);
+  background: var(--gold-muted);
+  color: var(--gold);
+}
+
+/* "Don't see your area?" line */
+.more {
+  margin: 24px 0 0;
+  text-align: center;
+  color: var(--text-muted); /* AA on --dark-soft (5.96:1) */
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.moreLink {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.moreLink:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill {
+    transition: none;
+  }
+}

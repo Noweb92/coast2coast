@@ -1,0 +1,229 @@
+/* ── Hero — full-viewport opener (server component) ─────────
+   Visual parity with the legacy inline-styled hero; all hover /
+   entrance motion is CSS-only and reduced-motion-safe.
+   ─────────────────────────────────────────────────────────── */
+
+.hero {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 100vh;
+  min-height: 100svh; /* stable on mobile URL-bar collapse */
+  padding: 140px var(--pad-x) 100px;
+  background: var(--dark);
+  overflow: hidden;
+}
+
+/* Directional darkening over the photo: strong on the copy side,
+   easing off to the right so the roofline stays visible. */
+.gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(22, 22, 25, 0.92) 0%,
+    rgba(22, 22, 25, 0.78) 45%,
+    rgba(22, 22, 25, 0.35) 100%
+  );
+}
+
+/* Soft gold ambience, top-right */
+.glow {
+  position: absolute;
+  top: -25%;
+  right: -10%;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--gold-muted), transparent 60%);
+}
+
+/* Hairline gold gradient anchoring the section bottom */
+.baseline {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.31), transparent);
+}
+
+.inner {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+/* ── Kicker: gold line + uppercase tagline ── */
+.line {
+  display: block;
+  width: 50px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+}
+
+.label {
+  margin: 16px 0 0;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+
+/* ── H1 ── */
+.title {
+  margin: 24px 0;
+  color: var(--text-white);
+  font-size: clamp(44px, 7vw, 80px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -3px;
+}
+
+/* Pure-CSS letter stagger (contract §4): keyframes + per-span
+   animation-delay set inline (0.3s + i·0.03s / 0.6s + i·0.04s,
+   max 0.88s ≤ 0.9s). `both` holds letters hidden through their
+   delay and visible after — no JS required to paint. */
+.letter {
+  display: inline-block;
+  animation: letterUp 0.35s ease both; /* last letter ends at 0.89s (contract §4: ≤0.9s) */
+}
+
+.letterGold {
+  color: var(--gold);
+}
+
+@keyframes letterUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Sub copy ── */
+.sub {
+  margin: 0 0 40px;
+  max-width: 480px;
+  color: var(--text-light);
+  font-size: clamp(15px, 1.8vw, 18px);
+  line-height: 1.8;
+}
+
+/* ── CTAs ── */
+.ctas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.ctaPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 36px;
+  border-radius: var(--radius-sm);
+  background: var(--gold);
+  color: var(--dark);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  box-shadow: 0 4px 20px rgba(251, 191, 36, 0.2);
+  transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+}
+.ctaPrimary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(251, 191, 36, 0.3);
+}
+
+.ctaGhost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 15px 32px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text-light);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.3s, color 0.3s;
+}
+.ctaGhost:hover {
+  border-color: var(--gold-dark);
+  color: var(--text-white);
+}
+
+/* ── Stats ── */
+.stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: clamp(28px, 5vw, 64px);
+  margin-top: 72px;
+}
+
+.statValue {
+  color: var(--gold);
+  font-size: clamp(22px, 3vw, 34px);
+  font-weight: 800;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.statLabel {
+  margin-top: 6px;
+  color: var(--text-light);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+/* ── Entrance rise (ports the legacy <Fade/> rhythm to CSS) ── */
+.rise {
+  animation: riseIn 0.8s var(--ease) both;
+}
+.riseTitle {
+  animation-delay: 0.12s;
+}
+.riseSub {
+  animation-delay: 0.35s;
+}
+.riseCtas {
+  animation-delay: 0.45s;
+}
+.riseStats {
+  animation-delay: 0.6s;
+}
+
+@keyframes riseIn {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ── Reduced motion: everything static, fully visible ──
+   (belt-and-braces on top of the global kill-switch) */
+@media (prefers-reduced-motion: reduce) {
+  .letter,
+  .rise {
+    animation: none;
+  }
+  .ctaPrimary:hover {
+    transform: none;
+  }
+}

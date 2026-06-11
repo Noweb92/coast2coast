@@ -1,0 +1,62 @@
+/* ── SectionHeader: gold line + uppercase label + h2 (+ optional sub) ── */
+
+.header {
+  /* Spacing below the header is owned by each section's layout. */
+}
+
+/* Decorative gold gradient line (50×2 default, 40×2 when centered) */
+.line {
+  display: block;
+  width: 50px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+}
+
+/* Small uppercase section label */
+.label {
+  margin: 16px 0 0;
+  color: var(--gold);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 4px;
+}
+
+/* Section heading */
+.title {
+  margin: 12px 0 0;
+  color: var(--text-white);
+  font-size: clamp(28px, 4vw, 46px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.1;
+}
+
+/* Optional sub paragraph */
+.sub {
+  margin: 12px 0 0;
+  max-width: 440px;
+  color: var(--text-muted); /* AA on every dark surface (5.6-6.6:1) */
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* On-light variant (dark={false}) */
+.light .line {
+  background: linear-gradient(90deg, var(--gold), var(--gold-deep));
+}
+.light .label { color: var(--gold-deep); }
+.light .title { color: var(--text-dark); }
+.light .sub { color: var(--text-dark-muted); }
+
+/* Centered variant */
+.center { text-align: center; }
+.center .line {
+  width: 40px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.center .sub {
+  margin-left: auto;
+  margin-right: auto;
+}

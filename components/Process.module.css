@@ -1,0 +1,99 @@
+/* ── Process — four-step timeline on the soft dark surface ── */
+
+.section {
+  position: relative;
+  padding: var(--section-y) var(--pad-x);
+  background: var(--dark-soft);
+}
+
+/* Hairline gold seam along the top edge */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--gold-dark) 25%, transparent),
+    transparent
+  );
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.head {
+  margin-bottom: 64px;
+}
+
+/* Ordered list of steps as a divider-joined grid */
+.grid {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Stretch steps so the dividers span the full row height */
+.cell {
+  display: flex;
+}
+
+.step {
+  position: relative;
+  flex: 1;
+  padding: 32px 28px;
+}
+
+/* Divider + gold connector dot on every step after the first */
+.grid > * + * .step {
+  border-left: 1px solid var(--border);
+}
+
+.grid > * + * .step::before {
+  content: "";
+  position: absolute;
+  top: 32px;
+  left: -7px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 0 4px var(--dark-soft);
+}
+
+/* Oversized ghost numeral */
+.num {
+  margin-bottom: 12px;
+  color: var(--gold);
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -2px;
+  opacity: 0.2;
+}
+
+.icon {
+  margin-bottom: 14px;
+  color: var(--gold);
+}
+
+.title {
+  margin: 0 0 8px;
+  color: var(--text-white);
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.desc {
+  margin: 0;
+  color: var(--text-muted); /* AA on --dark-soft (5.96:1) */
+  font-size: 13px;
+  line-height: 1.7;
+}

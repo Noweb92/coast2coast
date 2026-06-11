@@ -1,0 +1,103 @@
+/* ── Testimonials: dark-soft section with review cards ───── */
+
+.section {
+  position: relative;
+  padding: var(--section-y) var(--pad-x);
+  background: var(--dark-soft);
+}
+
+/* Hairline gold gradient along the top edge (was an aria-hidden div) */
+.section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.25), transparent);
+}
+
+.inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
+}
+
+.head {
+  margin-bottom: 56px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
+  gap: 14px;
+}
+
+/* Review card — hover lift is CSS-only */
+.card {
+  height: 100%;
+  margin: 0;
+  padding: 26px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--dark-card);
+  transition: border-color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.card:hover {
+  border-color: var(--gold-border);
+  transform: translateY(-3px);
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 16px;
+}
+.star {
+  color: var(--gold);
+  fill: var(--gold);
+}
+
+.quote {
+  margin: 0;
+}
+.quote p {
+  margin: 0 0 20px;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-style: italic;
+  line-height: 1.8;
+}
+
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border: 1.5px solid var(--gold-dark);
+  border-radius: 50%;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.who {
+  display: flex;
+  flex-direction: column;
+}
+.name {
+  color: var(--text-white);
+  font-size: 13px;
+  font-weight: 600;
+}
+.where {
+  color: var(--text-muted); /* AA on --dark-card (5.64:1) */
+  font-size: 11px;
+}
