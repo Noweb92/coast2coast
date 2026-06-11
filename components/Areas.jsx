@@ -1,4 +1,4 @@
-import { areas } from "@/lib/site.config";
+import { areas, business } from "@/lib/site.config";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Reveal from "@/components/islands/Reveal";
 import styles from "./Areas.module.css";
@@ -6,13 +6,19 @@ import styles from "./Areas.module.css";
 /**
  * Areas — server component, zero JS.
  *
- * Service-area pill list on the dark-soft background, with the gold hairline
- * along the top edge. Pill hover (gold border/text/tint) is CSS-only.
+ * Service-area tag list on the dark-soft background. DATUM pass: one of the
+ * four ghost monuments — an aria-hidden outlined "WA" (the existing
+ * business.address.state string, decorative repetition only) sits behind the
+ * tag cloud; tags are squared surveyor's chips. Hover (gold border/text/tint)
+ * is CSS-only.
  */
 export default function Areas() {
   return (
     <section id="areas" className={`cv-section ${styles.section}`}>
       <span className={styles.hairline} aria-hidden="true" />
+      <div className={`ghost ${styles.stateGhost}`} aria-hidden="true">
+        {business.address.state}
+      </div>
       <div className={styles.inner}>
         <Reveal className={styles.header}>
           <SectionHeader
@@ -20,6 +26,7 @@ export default function Areas() {
             title="All of WA."
             sub="Coast to coast, north to south."
             center
+            index="08"
           />
         </Reveal>
 

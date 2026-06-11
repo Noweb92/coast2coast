@@ -63,6 +63,21 @@
   --max-w: 1140px;
   --pad-x: 28px;
   --section-y: 110px;
+
+  /* ── DATUM additions (DESIGN_SPEC §4) ─────────────────── */
+  /* --font-display is injected by next/font on <html> (app/layout.js,
+     Archivo variable wdth 62–125). Not re-declared here: a :root
+     `--font-display: var(--font-display)` self-reference is a custom-
+     property cycle and could invalidate the font everywhere. */
+  --rule: color-mix(in srgb, var(--gold-dark) 30%, transparent); /* dimension-line stroke */
+  --ghost-stroke: rgba(251, 191, 36, 0.16);       /* default ghost outline (overridable) */
+  --radius-draft: 4px;                            /* cards / items / figure / inputs */
+  --radius-crisp: 2px;                            /* buttons / chips / tags / pills-no-more */
+
+  /* Display type scale (DESIGN_SPEC §5) — modules MAY consume these
+     instead of repeating the clamps. Always Archivo 700 uppercase. */
+  --display-h1: clamp(46px, 9.5vw, 120px);        /* hero H1 — stretch 125% */
+  --display-h2: clamp(32px, 5vw, 56px);           /* SectionHeader H2 — stretch 118% */
 }
 
 /* ── Reset ─────────────────────────────────────────────── */
@@ -176,6 +191,64 @@ input[type="range"]::-moz-range-thumb {
 }
 section[id] {
   scroll-margin-top: 90px;
+}
+
+/* ── DATUM utilities (DESIGN_SPEC §4) — decorative, aria-hidden only ── */
+
+/* Dimension line: 1px rule + 5×5 gold square endcaps.
+   Apply to dedicated aria-hidden spans/divs. Modules MAY replicate these
+   exact values on their own pseudo-elements where a span is impractical —
+   values are frozen: 1px stroke var(--rule) or var(--gold-dark),
+   5×5px var(--gold) endcaps offset top:-2px. One drawing convention,
+   everywhere. */
+.dimline {
+  position: relative;
+  display: block;
+  height: 1px;
+  background: var(--gold-dark);
+}
+.dimline::before,
+.dimline::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+}
+.dimline::before { left: 0; }
+.dimline::after { right: 0; }
+
+/* Ghost outline type (decorative ONLY — always aria-hidden).
+   Modules tune intensity by overriding --ghost-stroke on their own class —
+   never by introducing new colors. Real copy must NEVER adopt this class. */
+.ghost {
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  color: rgba(251, 191, 36, 0.12); /* engines without text-stroke */
+}
+@supports (-webkit-text-stroke: 1px #000) {
+  .ghost {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ghost-stroke);
+  }
+}
+
+/* Marquee (hero ticker, DESIGN_SPEC §7 row 4) — transform-only.
+   Seamless because the run is an exact 2× duplicate; under the global
+   reduced-motion kill-switch (duration .001ms, 1 iteration) it lands on
+   −50%, visually identical to frame 0. The hero module may also declare
+   this locally (CSS Modules scope keyframes — no collision). */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
 }
 
 /* ── Visually-hidden text for screen readers ───────────── */

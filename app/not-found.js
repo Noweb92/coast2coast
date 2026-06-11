@@ -17,14 +17,13 @@ const styles = {
       "radial-gradient(ellipse 90% 55% at 50% 0%, rgba(251,191,36,0.06), transparent 60%) var(--dark, #1e1e24)",
     color: "var(--text-white, #f5f5f4)",
   },
+  // Ghost outline recipe (DESIGN_SPEC §4) via the global `.ghost` utility —
+  // globals.css is loaded (renders within the root layout). Intensity tuned
+  // by overriding --ghost-stroke, per spec (never new colors).
   code: {
     fontSize: "clamp(96px, 22vw, 168px)",
-    fontWeight: 800,
-    lineHeight: 1,
-    letterSpacing: "-0.02em",
-    color: "transparent",
-    WebkitTextStroke: "1.5px rgba(251,191,36,0.4)",
-    userSelect: "none",
+    fontVariantNumeric: "tabular-nums",
+    "--ghost-stroke": "rgba(251,191,36,0.30)",
   },
   label: {
     marginTop: 28,
@@ -34,12 +33,17 @@ const styles = {
     letterSpacing: 4,
     textTransform: "uppercase",
   },
+  // Display caps per DESIGN_SPEC §5 / row 17 (stretch 118%, 700, uppercase
+  // via CSS only — DOM copy keeps sentence case).
   title: {
     margin: "14px 0 0",
+    fontFamily: "var(--font-display, inherit)",
     fontSize: "clamp(28px, 4vw, 46px)",
-    fontWeight: 800,
-    letterSpacing: -1,
-    lineHeight: 1.1,
+    fontWeight: 700,
+    fontStretch: "118%",
+    textTransform: "uppercase",
+    letterSpacing: 0,
+    lineHeight: 0.98,
   },
   copy: {
     margin: "16px auto 0",
@@ -57,7 +61,7 @@ const styles = {
     fontSize: 14,
     fontWeight: 700,
     letterSpacing: 0.3,
-    borderRadius: 100,
+    borderRadius: "var(--radius-crisp, 2px)",
     textDecoration: "none",
   },
 };
@@ -70,7 +74,7 @@ export default function NotFound() {
         .c2c-err-btn:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(251,191,36,.3)}
         @media (prefers-reduced-motion:reduce){.c2c-err-btn,.c2c-err-btn:hover{transition:none;transform:none}}
       `}</style>
-      <div aria-hidden="true" style={styles.code}>404</div>
+      <div aria-hidden="true" className="ghost" style={styles.code}>404</div>
       <p style={styles.label}>Page not found</p>
       <h1 style={styles.title}>
         This page doesn&rsquo;t <span style={{ color: "var(--gold, #fbbf24)" }}>exist.</span>

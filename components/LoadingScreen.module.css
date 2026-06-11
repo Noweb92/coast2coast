@@ -25,10 +25,8 @@
 .hide {
   opacity: 0;
 }
-/* Repeat visit — flagged synchronously by the inline script before hydration */
-.veil[data-skip="1"] {
-  display: none;
-}
+/* Repeat-visit skip: the island's inline script injects a head <style> rule
+   (#c2c-veil{display:none!important}) before hydration — no rule needed here. */
 
 /* ── Brand lockup ──────────────────────────────────────────── */
 .brandRow {
@@ -45,16 +43,20 @@
   width: 44px;
   height: 44px;
   border: 1.5px solid var(--gold-dark);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-crisp); /* DATUM §6.2 brand mark */
   color: var(--gold);
   animation: markPulse 1.5s ease infinite;
 }
+/* DATUM: expanded display caps — width (stretch 125%) replaces tracking. */
 .brandName {
   display: block;
   color: var(--text-white);
+  font-family: var(--font-display);
+  font-stretch: 125%;
   font-weight: 700;
   font-size: 18px;
-  letter-spacing: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0;
 }
 .brandSub {
   display: block;

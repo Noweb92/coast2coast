@@ -16,6 +16,7 @@ export default function BookInspection() {
         <Reveal className={styles.header}>
           <SectionHeader
             center
+            index="05"
             label="BOOK NOW"
             title="Book a free inspection."
             sub={<>Pick a date, we&apos;ll come to you. No obligation, no cost.</>}

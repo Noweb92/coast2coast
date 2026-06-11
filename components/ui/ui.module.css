@@ -1,62 +1,88 @@
-/* ── SectionHeader: gold line + uppercase label + h2 (+ optional sub) ── */
+/* ── SectionHeader: DATUM title block (DESIGN_SPEC §6.1) ──
+   Dimension rule + label/index meta row + expanded-caps h2 (+ optional sub).
+   The legacy gradient .line is retired here. */
 
 .header {
   /* Spacing below the header is owned by each section's layout. */
 }
 
-/* Decorative gold gradient line (50×2 default, 40×2 when centered) */
-.line {
-  display: block;
-  width: 50px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+/* Meta row: real label left, drawing index right, ruled like a title block.
+   The ::before square is the frozen dimension-line endcap (§4): 5×5 var(--gold). */
+.meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-top: 1px solid var(--rule);
+  padding-top: 14px;
+  position: relative;
+}
+.meta::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
 }
 
-/* Small uppercase section label */
+/* Small uppercase section label — real copy, colors unchanged */
 .label {
-  margin: 16px 0 0;
+  margin: 0;
   color: var(--gold);
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3.5px;
+  text-transform: uppercase;
 }
 
-/* Section heading */
+/* Drawing-set index numeral — decorative, aria-hidden, contrast-exempt */
+.index {
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 700;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--text-dim);
+}
+
+/* Section heading — display H2 (§5) */
 .title {
   margin: 12px 0 0;
   color: var(--text-white);
-  font-size: clamp(28px, 4vw, 46px);
-  font-weight: 800;
-  letter-spacing: -2px;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-size: var(--display-h2);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 0.98;
+  text-transform: uppercase;
 }
 
-/* Optional sub paragraph */
+/* Optional sub paragraph — hanging citation rule; colors/size are the AA floor */
 .sub {
   margin: 12px 0 0;
   max-width: 440px;
+  border-left: 2px solid var(--gold-dark);
+  padding-left: 16px;
   color: var(--text-muted); /* AA on every dark surface (5.6-6.6:1) */
   font-size: 15px;
   line-height: 1.7;
 }
 
 /* On-light variant (dark={false}) */
-.light .line {
-  background: linear-gradient(90deg, var(--gold), var(--gold-deep));
-}
 .light .label { color: var(--gold-deep); }
+.light .index { color: var(--text-faint); }
 .light .title { color: var(--text-dark); }
 .light .sub { color: var(--text-dark-muted); }
 
-/* Centered variant */
+/* Centered variant — meta row stays full-width flex (label left, index right);
+   title + sub center beneath. The asymmetric-rule/centered-title pairing is
+   intentional (§6.1). Sub loses the hanging rule when centered. */
 .center { text-align: center; }
-.center .line {
-  width: 40px;
-  margin-left: auto;
-  margin-right: auto;
-}
 .center .sub {
   margin-left: auto;
   margin-right: auto;
+  border-left: 0;
+  padding-left: 0;
 }

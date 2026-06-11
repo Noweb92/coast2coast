@@ -1,4 +1,7 @@
-/* ── Services — three core offerings on the warm light surface ── */
+/* ── Services — three core offerings on the warm light surface ──
+   DATUM treatment (DESIGN_SPEC §7 row 5): stepped rooflines ≥1024px,
+   drafted radii, expanded-caps card titles with a mini dimension rule,
+   spec-sheet feature list, gold top seam drawn on hover (transform-only). */
 
 .section {
   padding: var(--section-y) var(--pad-x);
@@ -14,7 +17,7 @@
   margin-bottom: 56px;
 }
 
-/* Card grid */
+/* Card grid — auto-fit below 1024px, stepped 3-up above */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(255px, 1fr));
@@ -29,13 +32,27 @@
   display: flex;
 }
 
+/* Stepped rooflines — each card sits one course lower than the last */
+@media (min-width: 1024px) {
+  .grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .cell:nth-child(2) {
+    margin-top: 32px;
+  }
+  .cell:nth-child(3) {
+    margin-top: 64px;
+  }
+}
+
 /* White panel that lifts on hover — pure CSS, zero JS */
 .card {
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: var(--radius-draft);
   border: 1px solid var(--border-light);
   background: var(--white);
   transition:
@@ -50,6 +67,24 @@
   box-shadow: var(--shadow-card);
 }
 
+/* Gold top seam — drawn left→right on hover, transform-only */
+.card::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+}
+
+.card:hover::after {
+  transform: scaleX(1);
+}
+
 /* Blurred icon chip floating over the photo */
 .chip {
   position: absolute;
@@ -60,7 +95,7 @@
   justify-content: center;
   width: 44px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: var(--radius-crisp);
   background: rgba(22, 22, 25, 0.55);
   -webkit-backdrop-filter: blur(6px);
   backdrop-filter: blur(6px);
@@ -72,11 +107,30 @@
   padding: 24px;
 }
 
+/* Card title — display caps over a 28px mini dimension rule.
+   Single pseudo draws both strokes (frozen values, DESIGN_SPEC §4):
+   1px var(--gold-dark) line at y=2 + one 5×5 var(--gold) endcap at y=0
+   (endcap offset top:-2px relative to the line). */
 .title {
   margin: 0 0 8px;
   color: var(--text-dark);
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-size: 15px;
   font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.title::before {
+  content: "";
+  display: block;
+  width: 28px;
+  height: 5px;
+  margin-bottom: 10px;
+  background:
+    linear-gradient(var(--gold) 0 0) left top / 5px 5px no-repeat,
+    linear-gradient(var(--gold-dark) 0 0) left 2px / 28px 1px no-repeat;
 }
 
 .desc {
@@ -86,11 +140,11 @@
   line-height: 1.7;
 }
 
-/* Always-visible feature list */
+/* Feature list as a ruled spec sheet */
 .features {
   display: flex;
   flex-direction: column;
-  gap: 7px;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -100,7 +154,9 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--text-dark-muted);
+  padding: 9px 0;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-dark-muted); /* AA on white — do not regress */
   font-size: 12px;
   font-weight: 500;
 }
@@ -111,7 +167,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card {
+  .card,
+  .card::after {
     transition: none;
   }
 }

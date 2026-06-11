@@ -1,15 +1,27 @@
 import "./globals.css";
-import { Inter } from "next/font/google";
+import { Inter, Archivo } from "next/font/google";
 import StructuredData from "@/components/StructuredData";
 import { business } from "@/lib/site.config";
 
 // Self-hosted, render-blocking-free, zero layout shift. `display: swap`
 // shows fallback text instantly; `preload` warms the hero font.
+// 800 dropped — the display face takes all headings (DESIGN_SPEC §3).
 const inter = Inter({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700", "800"],
+  weight: ["400", "500", "600", "700"],
   display: "swap",
   variable: "--font-inter",
+});
+
+// DATUM display face (DESIGN_SPEC §3) — Archivo variable with the `wdth`
+// axis (62–125, verified in next@14.2.35 font-data). Variable mode: `weight`
+// is OMITTED so `axes` is legal. Width is driven per-use via `font-stretch`
+// (118% / 125%) — never `font-variation-settings`.
+const archivo = Archivo({
+  subsets: ["latin"],
+  display: "swap",
+  axes: ["wdth"],
+  variable: "--font-display",
 });
 
 export const metadata = {
@@ -75,7 +87,7 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-AU" className={inter.variable}>
+    <html lang="en-AU" className={`${inter.variable} ${archivo.variable}`}>
       <body>
         <a href="#main" className="skip-link">Skip to content</a>
         {children}

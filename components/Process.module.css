@@ -1,4 +1,8 @@
-/* ── Process — four-step timeline on the soft dark surface ── */
+/* ── Process — four-step timeline on the soft dark surface ──
+   DATUM treatment (DESIGN_SPEC §7 row 7): the page's biggest ghost numerals
+   (outline-type recipe replicated in-module, sanctioned by §4), a true
+   dimension line across the top of the grid with 6×6 gold square ticks per
+   step and a closing endcap, expanded-caps step titles with the icon inline. */
 
 .section {
   position: relative;
@@ -41,59 +45,111 @@
   list-style: none;
 }
 
+/* The dimension line the steps hang from */
+.grid::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--rule);
+}
+
+/* Closing endcap, top-right of the line */
+.grid::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+}
+
 /* Stretch steps so the dividers span the full row height */
 .cell {
   display: flex;
 }
 
+/* Step — icon inline on the title row, ghost numeral above, desc beneath */
 .step {
   position: relative;
   flex: 1;
-  padding: 32px 28px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: center;
+  align-content: start;
+  padding: 40px 28px 32px;
 }
 
-/* Divider + gold connector dot on every step after the first */
+/* Gold square tick where each step meets the dimension line */
+.step::before {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  background: var(--gold);
+}
+
+/* Vertical hairline dividers between steps */
 .grid > * + * .step {
   border-left: 1px solid var(--border);
 }
 
-.grid > * + * .step::before {
-  content: "";
-  position: absolute;
-  top: 32px;
-  left: -7px;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--gold);
-  box-shadow: 0 0 0 4px var(--dark-soft);
+/* Ghost numeral — outline-type recipe (decorative, aria-hidden in JSX) */
+.num {
+  --ghost-stroke: rgba(251, 191, 36, 0.3);
+  grid-column: 1 / -1;
+  margin-bottom: 18px;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display);
+  font-stretch: 125%;
+  font-weight: 700;
+  font-size: clamp(72px, 9vw, 112px);
+  font-variant-numeric: tabular-nums;
+  line-height: 0.85;
+  white-space: nowrap;
+  color: rgba(251, 191, 36, 0.12); /* engines without text-stroke */
 }
 
-/* Oversized ghost numeral */
-.num {
-  margin-bottom: 12px;
-  color: var(--gold);
-  font-size: 36px;
-  font-weight: 800;
-  letter-spacing: -2px;
-  opacity: 0.2;
+@supports (-webkit-text-stroke: 1px #000) {
+  .num {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ghost-stroke);
+  }
 }
 
 .icon {
-  margin-bottom: 14px;
+  display: flex;
+  margin-bottom: 0;
   color: var(--gold);
 }
 
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .title {
-  margin: 0 0 8px;
+  margin: 0;
   color: var(--text-white);
-  font-size: 17px;
+  font-family: var(--font-display);
+  font-stretch: 118%;
+  font-size: 15px;
   font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .desc {
-  margin: 0;
-  color: var(--text-muted); /* AA on --dark-soft (5.96:1) */
+  grid-column: 1 / -1;
+  margin: 8px 0 0;
+  color: var(--text-muted); /* AA on --dark-soft (5.96:1) — do not regress */
   font-size: 13px;
   line-height: 1.7;
 }

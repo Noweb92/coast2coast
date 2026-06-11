@@ -34,6 +34,7 @@ export default function Contact() {
           <Reveal>
             <SectionHeader
               label="CONTACT"
+              index="09"
               dark={false}
               title={<>Get your<br />free quote.</>}
               sub={<>Tell us about your roof and we&apos;ll get back to you within 24 hours with an honest, itemised quote.</>}
@@ -56,7 +57,7 @@ export default function Contact() {
               ))}
             </div>
           </Reveal>
-          <Reveal delay={0.15}>
+          <Reveal delay={0.15} className={styles.formCol}>
             <QuoteForm />
           </Reveal>
         </div>

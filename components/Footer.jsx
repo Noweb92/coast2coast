@@ -18,6 +18,10 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.inner}>
+        {/* DATUM colophon monument — decorative repeat of the existing wordmark
+            string (DESIGN_SPEC §7 row 14). Outline type via the global .ghost
+            utility; silent to screen readers, clipped by .footer overflow. */}
+        <div className={`ghost ${styles.giant}`} aria-hidden="true">COAST2COAST</div>
         <div className={styles.grid}>
 
           <div>

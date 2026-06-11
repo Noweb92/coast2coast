@@ -1,14 +1,24 @@
-/* ── Footer — deep-dark closing band ─────────────────────── */
+/* ── Footer — the colophon (DATUM, DESIGN_SPEC §7 row 14) ── */
 
 .footer {
   padding: 56px var(--pad-x) 24px;
   background: var(--dark-deep);
   border-top: 1px solid var(--border);
+  overflow: hidden; /* clips the ghost monument cleanly at narrow widths */
 }
 
 .inner {
   max-width: var(--max-w);
   margin: 0 auto;
+}
+
+/* Ghost wordmark monument — composes the global .ghost utility
+   (outline type, aria-hidden); this class only sizes and tunes it. */
+.giant {
+  --ghost-stroke: rgba(251, 191, 36, 0.12);
+  text-align: center;
+  font-size: clamp(40px, 9vw, 118px);
+  margin-bottom: 48px;
 }
 
 .grid {
@@ -34,16 +44,20 @@
   height: 30px;
   flex-shrink: 0;
   border: 1.5px solid var(--gold-dark);
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-crisp); /* DATUM §6.2 */
   color: var(--gold);
 }
 
+/* DATUM: expanded display caps — width replaces tracking. */
 .wordmark {
   margin: 0;
   color: var(--text-white);
+  font-family: var(--font-display);
+  font-stretch: 125%;
   font-size: 13px;
   font-weight: 700;
-  letter-spacing: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0;
 }
 .wordmark span {
   color: var(--gold);
@@ -91,20 +105,41 @@
   margin: 0 0 14px;
   color: var(--gold);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   letter-spacing: 2px;
 }
 
+/* DATUM: same scaleX gold rule as the nav links (transform-only;
+   width:fit-content keeps the underline to the text, not the column). */
 .link {
+  position: relative;
   display: block;
+  width: fit-content;
   margin-bottom: 9px;
   color: var(--text-dim);
   font-size: 12px;
   text-decoration: none;
   transition: color 0.2s;
 }
-.link:hover {
+.link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s var(--ease);
+}
+.link:hover,
+.link:focus-visible {
   color: var(--gold);
+}
+.link:hover::after,
+.link:focus-visible::after {
+  transform: scaleX(1);
 }
 
 /* ── Contact column ──────────────────────────────────────── */
@@ -139,7 +174,10 @@ a.contactRow:hover {
 }
 
 /* ── Bottom bar ──────────────────────────────────────────── */
+/* DATUM: the closing rule reads as a dimension line — 4×4px gold
+   square endcaps sit on the border-top at both ends. */
 .bottom {
+  position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -148,9 +186,25 @@ a.contactRow:hover {
   padding-top: 18px;
   border-top: 1px solid var(--border);
 }
+.bottom::before,
+.bottom::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 4px;
+  height: 4px;
+  background: var(--gold);
+}
+.bottom::before {
+  left: 0;
+}
+.bottom::after {
+  right: 0;
+}
 
 .bottom p {
   margin: 0;
   color: var(--text-dim);
   font-size: 11px;
+  font-variant-numeric: tabular-nums; /* © year + ABN (DATUM §1.2 graft) */
 }

@@ -1,24 +1,54 @@
-/* ── Areas: dark-soft coverage section with pill list ── */
+/* ── Areas: dark-soft coverage section, surveyor's tag list ──
+   DATUM pass: flat 1px rule on the top edge (gradient retired per spec §2),
+   the giant aria-hidden "WA" ghost monument behind the tags, and squared
+   2px-radius tags in tracked caps. Real-copy colors are frozen (AA). */
 
 .section {
   position: relative;
+  overflow: hidden; /* the WA ghost must clip cleanly (spec QA gate) */
   padding: var(--section-y) var(--pad-x);
   background: var(--dark-soft);
 }
 
-/* Gold hairline along the top edge (legacy: goldDark @ 25%) */
+/* Full-bleed rules are plain 1px var(--rule) — endcaps belong to measured
+   spans only (one drawing convention, everywhere). */
 .hairline {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(184, 134, 11, 0.25),
-    transparent
-  );
+  background: var(--rule, rgba(184, 134, 11, 0.3));
+}
+
+/* ── Ghost monument: outlined "WA" behind the tag cloud ──
+   Decorative only (aria-hidden in JSX). Pairs with the global .ghost
+   utility; the recipe's frozen values are replicated here so the monument
+   is self-sufficient, with intensity tuned via --ghost-stroke (spec §4). */
+.stateGhost {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  user-select: none;
+  font-family: var(--font-display, inherit);
+  font-stretch: 125%;
+  font-weight: 700;
+  font-size: clamp(180px, 28vw, 340px);
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  --ghost-stroke: rgba(251, 191, 36, 0.1);
+  color: rgba(251, 191, 36, 0.07); /* engines without text-stroke */
+}
+
+@supports (-webkit-text-stroke: 1px #000) {
+  .stateGhost {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ghost-stroke);
+  }
 }
 
 .inner {
@@ -30,8 +60,10 @@
   margin-bottom: 44px;
 }
 
-/* Pill list */
+/* Tag list — lifted above the ghost */
 .pills {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -41,14 +73,17 @@
   list-style: none;
 }
 
+/* Surveyor's tag: crisp 2px radius, tracked caps. Hover colors unchanged. */
 .pill {
-  padding: 10px 22px;
+  padding: 10px 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-crisp, 2px);
   background: transparent;
   color: var(--text-muted);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
   cursor: default;
   transition:
     border-color 0.3s var(--ease),
@@ -62,7 +97,7 @@
   color: var(--gold);
 }
 
-/* "Don't see your area?" line */
+/* "Don't see your area?" line — untouched per spec */
 .more {
   margin: 24px 0 0;
   text-align: center;

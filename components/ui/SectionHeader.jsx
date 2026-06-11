@@ -3,16 +3,20 @@ import styles from "./ui.module.css";
 /**
  * SectionHeader — the repeated section intro pattern, rendered on the server.
  *
- * Gold gradient line → uppercase gold label → h2 (+ optional sub paragraph).
- * Ports the visual of the legacy GoldLine / SectionLabel primitives:
- *   line  50×2 (40×2 centered), gold → gold-dark (dark) / gold-deep (light)
- *   label 12px / 600 / 4px tracking
- *   h2    clamp(28px,4vw,46px) / 800 / -2px tracking
+ * DATUM title block (DESIGN_SPEC §6.1): a 1px dimension rule with a 5×5 gold
+ * endcap, label left / drawing index right, monumental expanded-caps h2
+ * (+ optional hanging-rule sub paragraph).
  *
- * Props: { label, title, sub, dark = true, center = false }
+ *   meta   border-top 1px var(--rule) + gold square endcap
+ *   label  11px / 700 / 3.5px tracking, gold (gold-deep on light)
+ *   index  Archivo 125% 700 12px tabular-nums — decorative, aria-hidden
+ *   h2     var(--display-h2) Archivo 118% 700 uppercase
+ *
+ * Props: { label, title, sub, dark = true, center = false, index }
  * `title` and `sub` accept nodes, so multi-line titles (<>…<br/>…</>) work.
+ * `index` is the drawing-set numeral ("02"–"09"), silent to screen readers.
  */
-export default function SectionHeader({ label, title, sub, dark = true, center = false }) {
+export default function SectionHeader({ label, title, sub, dark = true, center = false, index }) {
   const cls = [
     styles.header,
     !dark && styles.light,
@@ -21,8 +25,10 @@ export default function SectionHeader({ label, title, sub, dark = true, center =
 
   return (
     <div className={cls}>
-      <span className={styles.line} aria-hidden="true" />
-      <p className={styles.label}>{label}</p>
+      <div className={styles.meta}>
+        <p className={styles.label}>{label}</p>
+        {index && <span className={styles.index} aria-hidden="true">{index}</span>}
+      </div>
       <h2 className={styles.title}>{title}</h2>
       {sub != null && <p className={styles.sub}>{sub}</p>}
     </div>

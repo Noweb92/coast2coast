@@ -1,6 +1,14 @@
 /* ── Hero — full-viewport opener (server component) ─────────
-   Visual parity with the legacy inline-styled hero; all hover /
-   entrance motion is CSS-only and reduced-motion-safe.
+   DATUM treatment (DESIGN_SPEC rows 3–4): display-caps H1,
+   dimension-line kicker, hanging-rule sub, surveyor's-title-block
+   stats, drafting rail, and the signature service-name ticker.
+   All hover / entrance motion is CSS-only, transform/opacity only,
+   and reduced-motion-safe.
+
+   Foundations tokens (--font-display, --rule, --radius-crisp) are
+   referenced with their frozen spec values as var() fallbacks so the
+   hero renders correctly independent of merge order; the fallbacks
+   are byte-equivalent to DESIGN_SPEC §4.
    ─────────────────────────────────────────────────────────── */
 
 .hero {
@@ -9,7 +17,7 @@
   align-items: center;
   min-height: 100vh;
   min-height: 100svh; /* stable on mobile URL-bar collapse */
-  padding: 140px var(--pad-x) 100px;
+  padding: 140px var(--pad-x) 170px; /* bottom clears the ticker strip */
   background: var(--dark);
   overflow: hidden;
 }
@@ -38,16 +46,6 @@
   background: radial-gradient(circle, var(--gold-muted), transparent 60%);
 }
 
-/* Hairline gold gradient anchoring the section bottom */
-.baseline {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(184, 134, 11, 0.31), transparent);
-}
-
 .inner {
   position: relative;
   z-index: 1;
@@ -56,13 +54,56 @@
   margin: 0 auto;
 }
 
-/* ── Kicker: gold line + uppercase tagline ── */
+/* ── Drafting rail: decorative vertical ruler in the left gutter ──
+   1px spine + 1px tick marks every 22px (frozen geometry, spec row 3f).
+   Hidden until the gutter is wide enough to hold it uncut
+   (left:-36px + 9px needs ≥45px outside --max-w; that exists from
+   ~1240px viewport — below that the spec hides it anyway). */
+.rail {
+  position: absolute;
+  left: -36px;
+  top: 8px;
+  bottom: 8px;
+  width: 9px;
+  border-left: 1px solid var(--rule, rgba(184, 134, 11, 0.3));
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 21px,
+    var(--rule, rgba(184, 134, 11, 0.3)) 21px 22px
+  );
+  pointer-events: none;
+  user-select: none;
+}
+@media (max-width: 1239px) {
+  .rail {
+    display: none;
+  }
+}
+
+/* ── Kicker: gold dimension line + uppercase tagline ──
+   Frozen dimension-line values (spec §4): 1px gold-dark stroke,
+   5×5px gold square endcaps offset top:-2px. */
 .line {
+  position: relative;
   display: block;
   width: 50px;
-  height: 2px;
-  border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold), var(--gold-dark));
+  height: 1px;
+  background: var(--gold-dark);
+}
+.line::before,
+.line::after {
+  content: "";
+  position: absolute;
+  top: -2px;
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
+}
+.line::before {
+  left: 0;
+}
+.line::after {
+  right: 0;
 }
 
 .label {
@@ -74,18 +115,29 @@
   text-transform: uppercase;
 }
 
-/* ── H1 ── */
+/* ── H1 — DATUM display caps (spec §5 H1 row) ──
+   Uppercase is CSS-only; the DOM keeps approved sentence case.
+   Variable width is the responsive mechanism: stretch steps down
+   to 110% below 480px instead of wrapping or shrinking. */
 .title {
   margin: 24px 0;
   color: var(--text-white);
-  font-size: clamp(44px, 7vw, 80px);
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -3px;
+  font-family: var(--font-display, var(--font-inter, inherit));
+  font-size: clamp(46px, 9.5vw, 120px);
+  font-weight: 700;
+  font-stretch: 125%;
+  line-height: 0.92;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+}
+@media (max-width: 480px) {
+  .title {
+    font-stretch: 110%;
+  }
 }
 
 /* Pure-CSS letter stagger (contract §4): keyframes + per-span
-   animation-delay set inline (0.3s + i·0.03s / 0.6s + i·0.04s,
+   animation-delay set inline (0.15s + i·0.025s / 0.4s + i·0.02s,
    max 0.88s ≤ 0.9s). `both` holds letters hidden through their
    delay and visible after — no JS required to paint. */
 .letter {
@@ -94,7 +146,7 @@
 }
 
 .letterGold {
-  color: var(--gold);
+  color: var(--gold); /* stays flat gold (spec row 3a) */
 }
 
 @keyframes letterUp {
@@ -108,16 +160,18 @@
   }
 }
 
-/* ── Sub copy ── */
+/* ── Sub copy — hanging citation rule (system match with SectionHeader) ── */
 .sub {
   margin: 0 0 40px;
   max-width: 480px;
+  padding-left: 16px;
+  border-left: 2px solid var(--gold-dark);
   color: var(--text-light);
   font-size: clamp(15px, 1.8vw, 18px);
   line-height: 1.8;
 }
 
-/* ── CTAs ── */
+/* ── CTAs (spec §6.3 — one treatment, hero instances) ── */
 .ctas {
   display: flex;
   flex-wrap: wrap;
@@ -129,7 +183,7 @@
   align-items: center;
   gap: 10px;
   padding: 15px 36px;
-  border-radius: var(--radius-sm);
+  border-radius: var(--radius-crisp, 2px);
   background: var(--gold);
   color: var(--dark);
   font-size: 14px;
@@ -150,8 +204,8 @@
   align-items: center;
   gap: 10px;
   padding: 15px 32px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: var(--radius-crisp, 2px);
   background: rgba(255, 255, 255, 0.04);
   color: var(--text-light);
   font-size: 14px;
@@ -164,28 +218,117 @@
   color: var(--text-white);
 }
 
-/* ── Stats ── */
+/* ── Stats — the surveyor's title block (spec row 3e) ──
+   Hairline-ruled columns: expanded gold tabular numerals over
+   tracked micro-caps. Below 640px every stat keeps its left rule
+   so wrapped rows stay consistent; from 640px the first column
+   drops it (spec: "each stat after the first"). */
 .stats {
   display: flex;
   flex-wrap: wrap;
-  gap: clamp(28px, 5vw, 64px);
+  gap: 20px clamp(20px, 3vw, 32px);
   margin-top: 72px;
+  padding-top: 28px;
+  border-top: 1px solid var(--rule, rgba(184, 134, 11, 0.3));
+}
+
+.stats > div {
+  border-left: 1px solid var(--rule, rgba(184, 134, 11, 0.3));
+  padding-left: clamp(20px, 3vw, 32px);
+}
+@media (min-width: 640px) {
+  .stats > div:first-child {
+    border-left: 0;
+    padding-left: 0;
+  }
 }
 
 .statValue {
-  color: var(--gold);
-  font-size: clamp(22px, 3vw, 34px);
-  font-weight: 800;
-  letter-spacing: -1px;
+  color: var(--gold); /* large/bold gold-on-dark — existing approved usage */
+  font-family: var(--font-display, var(--font-inter, inherit));
+  font-size: clamp(30px, 4vw, 46px);
+  font-weight: 700;
+  font-stretch: 125%;
+  font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .statLabel {
   margin-top: 6px;
   color: var(--text-light);
-  font-size: 11px;
-  font-weight: 500;
-  letter-spacing: 0.5px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── Ticker — THE signature (spec row 4) ──
+   Server-rendered aria-hidden marquee pinned to the hero's bottom
+   edge. The run is an exact 2× duplicate of the three service-name
+   strings, so translateX(−50%) is geometrically identical to frame 0:
+   the loop is seamless and the global reduced-motion kill-switch
+   (duration .001ms, 1 iteration) freezes it on a complete frame.
+   The strip itself stays hoverable for the pause graft (§1.2); the
+   type is inert (pointer-events/user-select none on the spans). */
+.ticker {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  border-top: 1px solid var(--rule, rgba(184, 134, 11, 0.3));
+}
+
+.tickerRun {
+  display: flex;
+  align-items: center;
+  width: max-content;
+  padding: 16px 0;
+  animation: marquee 36s linear infinite;
+}
+
+.ticker:hover .tickerRun {
+  animation-play-state: paused; /* HEAVY GAUGE graft (§1.2) */
+}
+
+/* Ghost outline type — in-module replication of the frozen .ghost
+   recipe (§4) at the ticker's tuned intensity (--ghost-stroke .30).
+   The 6×6px gold square separator is CSS-drawn (no text node); its
+   48px margins carry ALL inter-item spacing so every repeating unit
+   is uniform and the −50% loop has no seam. */
+.tickerItem {
+  --ghost-stroke: rgba(251, 191, 36, 0.3);
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-display, var(--font-inter, inherit));
+  font-size: clamp(24px, 3.2vw, 40px);
+  font-weight: 700;
+  font-stretch: 125%;
+  line-height: 1;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(251, 191, 36, 0.12); /* engines without text-stroke */
+  pointer-events: none;
+  user-select: none;
+}
+@supports (-webkit-text-stroke: 1px #000) {
+  .tickerItem {
+    color: transparent;
+    -webkit-text-stroke: 1px var(--ghost-stroke);
+  }
+}
+.tickerItem::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin: 0 48px;
+  background: var(--gold);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%); /* transform-only (compositor-friendly) */
+  }
 }
 
 /* ── Entrance rise (ports the legacy <Fade/> rhythm to CSS) ── */
@@ -217,10 +360,12 @@
 }
 
 /* ── Reduced motion: everything static, fully visible ──
-   (belt-and-braces on top of the global kill-switch) */
+   (belt-and-braces on top of the global kill-switch; the ticker
+   parks at frame 0 — a complete, seamless frame) */
 @media (prefers-reduced-motion: reduce) {
   .letter,
-  .rise {
+  .rise,
+  .tickerRun {
     animation: none;
   }
   .ctaPrimary:hover {

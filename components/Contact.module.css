@@ -12,14 +12,40 @@
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 56px 72px;
+  grid-template-columns: 1fr;
+  gap: 48px;
 }
 
-@media (max-width: 768px) {
+/* Editorial asymmetry — narrow info rail, dominant form (DESIGN_SPEC §7 row 13) */
+@media (min-width: 900px) {
   .grid {
-    gap: 48px;
+    grid-template-columns: 5fr 7fr;
+    gap: 56px 72px;
   }
+}
+
+/* ── Form column — 56px dimension rule, one gold endcap ── */
+.formCol {
+  position: relative;
+  padding-top: 24px;
+}
+.formCol::before {
+  content: "";
+  position: absolute;
+  top: 9px;
+  left: 0;
+  width: 56px;
+  height: 1px;
+  background: var(--gold-dark);
+}
+.formCol::after {
+  content: "";
+  position: absolute;
+  top: 7px; /* endcap rides the rule at the frozen -2px offset (§4) */
+  left: 0;
+  width: 5px;
+  height: 5px;
+  background: var(--gold);
 }
 
 /* ── Contact rows (business.*) ─────────────────────────── */
@@ -45,7 +71,7 @@
   flex-shrink: 0;
   background: var(--white);
   border: 1px solid var(--border-light);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-crisp, 2px);
   color: var(--gold-deep);
 }
 
@@ -54,8 +80,8 @@
 .rowLabel {
   color: var(--text-faint);
   font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 1px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
 }
 
 .rowValue {

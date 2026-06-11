@@ -1,4 +1,9 @@
-/* ── TrustBadges — credibility strip on the soft dark surface ── */
+/* ── TrustBadges — certification ledger on the soft dark surface ──
+   DATUM treatment (DESIGN_SPEC §7 row 6): the six floating cards collapse
+   into one framed ledger — gap:0 grid inside a 1px frame, internal hairlines
+   drawn with offset box-shadows on the cells (collapses correctly at every
+   auto-fit wrap; shadows that overlap the frame paint the same color, so no
+   doubling). Icon sits inline on the title row; .desc keeps the audit floor. */
 
 .section {
   position: relative;
@@ -27,53 +32,71 @@
   margin: 0 auto;
 }
 
+/* The ledger frame */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
+  gap: 0;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-/* Stretch badges to equal height within a row */
-.cell {
-  display: flex;
-}
-
-.badge {
-  flex: 1;
-  padding: 24px 16px;
-  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--dark-card);
-  text-align: center;
-  transition:
-    transform 0.3s var(--ease),
-    border-color 0.3s var(--ease);
+}
+
+/* Internal hairlines — left + top rules per cell via box-shadow */
+.cell {
+  display: flex;
+  box-shadow:
+    -1px 0 0 var(--border),
+    0 -1px 0 var(--border);
+}
+
+/* Ledger entry — icon inline on the title row, desc beneath both */
+.badge {
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 10px;
+  align-items: center;
+  align-content: start;
+  padding: 22px 24px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+  transition: background-color 0.3s var(--ease);
 }
 
 .badge:hover {
-  transform: translateY(-2px);
-  border-color: var(--gold-border);
+  transform: none;
+  background: var(--gold-muted);
 }
 
 .icon {
   display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
   color: var(--gold);
 }
 
+.icon svg {
+  width: 18px;
+  height: 18px;
+}
+
 .title {
-  margin-bottom: 4px;
+  margin-bottom: 0;
   color: var(--text-white);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
 .desc {
-  color: var(--text-muted); /* AA on --dark-card (5.64:1) */
+  grid-column: 1 / -1;
+  margin-top: 6px;
+  color: var(--text-muted); /* AA on --dark-card (5.64:1) — the audit floor */
   font-size: 11px;
   line-height: 1.4;
 }

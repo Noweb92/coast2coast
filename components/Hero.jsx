@@ -1,5 +1,5 @@
 import { ArrowRight, Phone } from "lucide-react";
-import { business } from "@/lib/site.config";
+import { business, services } from "@/lib/site.config";
 import { images } from "@/lib/images";
 import SmartImage from "@/components/ui/SmartImage";
 import CountUp from "@/components/islands/CountUp";
@@ -9,13 +9,20 @@ import styles from "./Hero.module.css";
  * Hero — full-viewport opener. SERVER COMPONENT (contract §2).
  *
  * Photographic backdrop (LCP candidate: priority + sizes="100vw"), tagline
- * kicker, the "Built to / protect." H1 with a pure-CSS letter stagger
- * (keyframes + per-span animation-delay, max delay 0.88s ≤ 0.9s — contract
- * §4: paints without JS/hydration; reduced-motion shows it static via the
- * global kill-switch + module fallback), sub copy, the two CTAs (CSS-only
- * hovers) and the three stats. Only the stat counters hydrate (<CountUp/>),
- * and they server-render their final values, so every word and number of
- * approved copy is in the initial HTML.
+ * kicker over a dimension line, the "Built to / protect." H1 (DATUM display
+ * caps; uppercase is CSS-only — DOM keeps approved sentence case) with a
+ * pure-CSS letter stagger (keyframes + per-span animation-delay, max delay
+ * 0.88s ≤ 0.9s — contract §4: paints without JS/hydration; reduced-motion
+ * shows it static via the global kill-switch + module fallback), sub copy,
+ * the two CTAs (CSS-only hovers) and the surveyor's-title-block stats. Only
+ * the stat counters hydrate (<CountUp/>), and they server-render their final
+ * values, so every word and number of approved copy is in the initial HTML.
+ *
+ * DESIGN_SPEC rows 3–4: an aria-hidden vertical ruler rail (desktop only)
+ * and the page's signature — a server-rendered, aria-hidden marquee of the
+ * three EXISTING services[].title strings in outlined expanded caps, the run
+ * duplicated exactly 2× so the −50% translate loops seamlessly and the
+ * reduced-motion kill-switch freezes it on a complete frame.
  *
  * Inline styles are limited to truly dynamic values: per-letter
  * animation-delay and the SmartImage frame position (its documented API).
@@ -48,9 +55,11 @@ export default function Hero() {
       />
       <div className={styles.gradient} aria-hidden="true" />
       <div className={styles.glow} aria-hidden="true" />
-      <div className={styles.baseline} aria-hidden="true" />
 
       <div className={styles.inner}>
+        {/* Drafting rail — decorative vertical ruler in the left gutter (≥ wide desktop) */}
+        <div className={styles.rail} aria-hidden="true" />
+
         <div className={styles.rise}>
           <span className={styles.line} aria-hidden="true" />
           <p className={styles.label}>{business.tagline}</p>
@@ -94,6 +103,20 @@ export default function Hero() {
             <div className={styles.statValue}>{business.stats.googleRating.toFixed(1)}★</div>
             <div className={styles.statLabel}>Google rating</div>
           </div>
+        </div>
+      </div>
+
+      {/* DATUM signature — decorative marquee of the three existing service
+          names (verbatim services[].title strings, aria-hidden). The run is
+          duplicated exactly 2×: translateX(−50%) loops seamlessly, and the
+          reduced-motion kill-switch lands on a frame identical to frame 0. */}
+      <div className={styles.ticker} aria-hidden="true">
+        <div className={styles.tickerRun}>
+          {[...services, ...services].map((s, i) => (
+            <span key={i} className={styles.tickerItem}>
+              {s.title}
+            </span>
+          ))}
         </div>
       </div>
     </section>

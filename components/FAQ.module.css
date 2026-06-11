@@ -1,4 +1,7 @@
-/* ── FAQ: light warm section, native <details> accordion ── */
+/* ── FAQ: light warm section, native <details> accordion ──
+   DATUM pass: drafted 4px radius, decimal-leading-zero CSS-counter indexes
+   (display face, tabular-nums, aria-silent via `/ ""`), gold-dark spine on
+   the open item. Question/answer typography and colors are frozen (AA). */
 
 .section {
   padding: var(--section-y) var(--pad-x);
@@ -18,13 +21,14 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
+  counter-reset: faq;
 }
 
-/* Accordion item */
+/* Accordion item — drafted radius (spec §6.2) */
 .item {
   background: var(--white);
   border: 1px solid var(--border-light);
-  border-radius: 10px;
+  border-radius: var(--radius-draft, 4px);
   overflow: hidden;
   transition: border-color 0.3s var(--ease);
 }
@@ -35,6 +39,7 @@
 
 .item[open] {
   border-color: var(--gold-border);
+  border-left: 2px solid var(--gold-dark);
 }
 
 /* Question row — replaces the legacy button, keeps its typography */
@@ -53,15 +58,33 @@
   display: none;
 }
 
+/* Drawing-set index: 01, 02, … — decorative, silent to screen readers
+   (the `/ ""` alt). Contrast-exempt per spec, but gold-deep clears AA on
+   white regardless. */
+.summary::before {
+  counter-increment: faq;
+  content: counter(faq, decimal-leading-zero) / "";
+  font-family: var(--font-display, inherit);
+  font-stretch: 125%;
+  font-weight: 700;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.45;
+  color: var(--gold-deep);
+  min-width: 32px;
+  flex-shrink: 0;
+}
+
 /* The global focus ring is drawn outside the border box and would be
    clipped by .item's overflow:hidden — pull it inside instead. */
 .summary:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: -4px;
-  border-radius: 10px;
+  border-radius: var(--radius-crisp, 2px);
 }
 
 .question {
+  flex: 1; /* hug the index column; keep the chevron pinned right */
   color: var(--text-dark);
   font-size: 15px;
   font-weight: 600;
@@ -80,13 +103,22 @@
 }
 
 /* Answer — in the HTML even when closed; fades/slides in on open.
-   (Height is not animated — the browser snaps it open, the content eases.) */
+   (Height is not animated — the browser snaps it open, the content eases.)
+   Colors/size frozen (AA floor). */
 .answer {
   margin: 0;
   padding: 0 22px 18px;
   color: var(--text-dark-muted);
   font-size: 14px;
   line-height: 1.7;
+}
+
+/* ≥640px: hang the answer off the index column (22px pad + 32px counter
+   + 16px gap), so Q and A share one left datum. */
+@media (min-width: 640px) {
+  .answer {
+    padding-left: 70px;
+  }
 }
 
 .item[open] .answer {

@@ -16,7 +16,7 @@ export default function Process() {
     <section id="process" className={`${styles.section} cv-section`}>
       <div className={styles.inner}>
         <Reveal className={styles.head}>
-          <SectionHeader label="HOW IT WORKS" title="Four steps. Zero stress." center />
+          <SectionHeader label="HOW IT WORKS" title="Four steps. Zero stress." center index="03" />
         </Reveal>
 
         <ol className={styles.grid}>

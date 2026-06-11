@@ -26,11 +26,11 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     border: "1px solid var(--gold-border, rgba(251,191,36,0.18))",
-    borderRadius: 14,
+    borderRadius: "var(--radius-crisp, 2px)",
     background: "var(--gold-muted, rgba(251,191,36,0.08))",
     color: "var(--gold, #fbbf24)",
     fontSize: 26,
-    fontWeight: 800,
+    fontWeight: 700,
     userSelect: "none",
   },
   label: {
@@ -41,12 +41,17 @@ const styles = {
     letterSpacing: 4,
     textTransform: "uppercase",
   },
+  // Display caps per DESIGN_SPEC §5 / row 17 (stretch 118%, 700, uppercase
+  // via CSS only — DOM copy keeps sentence case).
   title: {
     margin: "14px 0 0",
+    fontFamily: "var(--font-display, inherit)",
     fontSize: "clamp(28px, 4vw, 46px)",
-    fontWeight: 800,
-    letterSpacing: -1,
-    lineHeight: 1.1,
+    fontWeight: 700,
+    fontStretch: "118%",
+    textTransform: "uppercase",
+    letterSpacing: 0,
+    lineHeight: 0.98,
   },
   copy: {
     margin: "16px auto 0",
@@ -70,7 +75,7 @@ const styles = {
     fontWeight: 700,
     letterSpacing: 0.3,
     border: "none",
-    borderRadius: 100,
+    borderRadius: "var(--radius-crisp, 2px)",
     cursor: "pointer",
   },
   btnGhost: {
@@ -81,8 +86,8 @@ const styles = {
     fontSize: 14,
     fontWeight: 600,
     letterSpacing: 0.3,
-    border: "1px solid var(--border, #333338)",
-    borderRadius: 100,
+    border: "1px solid rgba(255,255,255,.18)",
+    borderRadius: "var(--radius-crisp, 2px)",
     textDecoration: "none",
   },
 };

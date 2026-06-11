@@ -85,11 +85,13 @@ export default function LoadingScreen() {
       <div className={styles.pct}>{progress}%</div>
     </div>
     {/* Synchronous repeat-visit skip: hides the server-rendered veil BEFORE
-        hydration (the useEffect check above only runs after). */}
+        hydration (the useEffect check above only runs after). It injects a
+        <style> into <head> — React never hydrates/diffs head children, so
+        this cannot cause a hydration mismatch on the veil element. */}
     <script
       dangerouslySetInnerHTML={{
         __html:
-          'try{sessionStorage.getItem("c2c_intro_seen")==="1"&&(document.getElementById("c2c-veil").dataset.skip="1")}catch(e){}',
+          'try{if(sessionStorage.getItem("c2c_intro_seen")==="1"){var s=document.createElement("style");s.textContent="#c2c-veil{display:none!important}";document.head.appendChild(s)}}catch(e){}',
       }}
     />
     </>

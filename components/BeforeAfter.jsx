@@ -22,10 +22,12 @@ export default function BeforeAfter() {
             sub="Drag the slider to compare before and after."
             dark={false}
             center
+            index="04"
           />
         </Reveal>
         <Reveal delay={0.15}>
           <BeforeAfterSlider />
+          <div className={styles.ruler} aria-hidden="true" />
         </Reveal>
       </div>
     </section>

@@ -23,17 +23,29 @@
   margin: 0;
   overflow: hidden;
   border: 1px solid var(--border-light);
-  border-radius: 14px;
+  border-radius: var(--radius-draft);
   cursor: col-resize;
   user-select: none;
   -webkit-user-select: none;
   touch-action: pan-y; /* horizontal drags belong to the slider, vertical to the page */
 }
 
-/* Keep the figure's rounded corners when the global focus ring
+/* Keep the figure's drafted corners when the global focus ring
    (:focus-visible { border-radius: 4px }) kicks in. */
 .figure:focus-visible {
-  border-radius: 14px;
+  border-radius: var(--radius-draft);
+}
+
+/* ── Ruler strip (aria-hidden div in the server shell, below the slider) ──
+   Minor ticks every 24px (bottom-aligned, 6px tall) + gold majors every
+   120px — the comparison figure reads as a measuring instrument. */
+.ruler {
+  height: 10px;
+  margin-top: 8px;
+  background:
+    repeating-linear-gradient(to right, var(--border-light) 0 1px, transparent 1px 24px)
+      bottom / 100% 6px no-repeat,
+    repeating-linear-gradient(to right, var(--rule) 0 1px, transparent 1px 120px);
 }
 
 /* Photos must never hijack the drag (native image drag / selection). */
@@ -47,17 +59,18 @@
   inset: 0;
 }
 
-/* AFTER / BEFORE pills */
+/* AFTER / BEFORE pills — surveyor's tags (drafted 2px radius) */
 .pill {
   position: absolute;
   bottom: 16px;
   z-index: 2;
   padding: 5px 14px;
-  border-radius: var(--radius-pill);
+  border-radius: var(--radius-crisp);
   color: var(--white);
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
 }
 .pillAfter {
   right: 16px;
@@ -79,7 +92,7 @@
   background: var(--gold);
 }
 
-/* Circular grip riding the divider */
+/* Square drafted grip riding the divider (44×44 touch target kept) */
 .grip {
   position: absolute;
   top: 50%;
@@ -90,7 +103,7 @@
   width: 44px;
   height: 44px;
   transform: translate(-50%, -50%);
-  border-radius: 50%;
+  border-radius: var(--radius-crisp);
   background: var(--gold);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }

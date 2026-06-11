@@ -32,6 +32,7 @@ export default function Services() {
             title="What we do."
             sub="Three core services, one standard of excellence."
             dark={false}
+            index="02"
           />
         </Reveal>
 
@@ -42,7 +43,7 @@ export default function Services() {
                 <SmartImage
                   image={IMAGE_BY_ID[s.id]}
                   sizes="(max-width: 768px) 100vw, 360px"
-                  style={{ height: 150 }}
+                  style={{ height: 200 }}
                   overlay
                   overlayStrength={0.15}
                 >
