@@ -9,9 +9,10 @@ import styles from "@/components/BeforeAfter.module.css";
 /**
  * BeforeAfterSlider — the draggable before/after comparison figure.
  *
- * Both layers use the SAME verified roof photograph; the "before" layer has a
- * CSS filter applied that simulates a weathered, grimy roof. Dragging the
- * handle genuinely shows the same roof clean vs. dirty.
+ * A REAL image pair with identical geometry: the AFTER layer is the clean
+ * tile photograph, the BEFORE layer is the same photograph through a
+ * realistic weathering pass (patchy grime, moss in the grooves, lichen —
+ * baked into /photos/beforeafter-before.jpg, not a flat CSS filter).
  *
  * PERFORMANCE: drag NEVER goes through React state. Pointer events are
  * captured on the figure (setPointerCapture — one listener, mouse + touch +
@@ -23,9 +24,6 @@ import styles from "@/components/BeforeAfter.module.css";
  * A11y: role="slider" + aria-value* on the figure, ArrowLeft/Right (4%),
  * Up/Down, Home/End — all through the same rAF path.
  */
-const BEFORE_FILTER =
-  "grayscale(0.55) contrast(0.92) brightness(0.72) sepia(0.18) saturate(0.7)";
-
 const MIN = 5;
 const MAX = 95;
 
@@ -102,7 +100,8 @@ export default function BeforeAfterSlider() {
     }
   };
 
-  const roof = images.beforeAfterRoof;
+  const after = images.beforeAfterAfter;
+  const before = images.beforeAfterBefore;
 
   return (
     <figure
@@ -120,24 +119,21 @@ export default function BeforeAfterSlider() {
       onPointerUp={endDrag}
       onPointerCancel={endDrag}
     >
-      {/* AFTER — the same roof, untouched (clean & vibrant) */}
+      {/* AFTER — the clean roof */}
       <SmartImage
-        image={roof}
+        image={after}
         sizes="(max-width: 900px) 100vw, 900px"
         style={{ position: "absolute", inset: 0 }}
       >
         <span className={`${styles.pill} ${styles.pillAfter}`}>AFTER</span>
       </SmartImage>
 
-      {/* BEFORE — same roof, clipped by the handle, with a "weathered" filter */}
+      {/* BEFORE — the genuinely weathered version, clipped by the handle */}
       <div ref={clipRef} className={styles.clip} style={{ clipPath: "inset(0 50% 0 0)" }}>
         <SmartImage
-          image={roof}
+          image={before}
           sizes="(max-width: 900px) 100vw, 900px"
           style={{ position: "absolute", inset: 0 }}
-          imgStyle={{ filter: BEFORE_FILTER }}
-          overlay
-          overlayStrength={0.25}
         >
           <span className={`${styles.pill} ${styles.pillBefore}`}>BEFORE</span>
         </SmartImage>
