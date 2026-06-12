@@ -19,10 +19,12 @@
 .panel {
   width: 230px;
   padding: 20px;
-  background: var(--dark-card);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  box-shadow: var(--shadow-float);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(20px) saturate(1.4);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-draft);
+  box-shadow: var(--shadow-deep);
   animation: panelIn 0.3s ease;
 }
 .panelTitle {

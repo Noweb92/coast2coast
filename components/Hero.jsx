@@ -43,16 +43,19 @@ function Letters({ text, base, step, gold = false }) {
 
 export default function Hero() {
   return (
-    <section id="hero" className={styles.hero}>
+    <section id="hero" className={`${styles.hero} grain`}>
       {/* Photographic backdrop with darkening overlay for text contrast */}
-      <SmartImage
-        image={images.hero}
-        priority
-        sizes="100vw"
-        overlay
-        overlayStrength={0.55}
-        style={{ position: "absolute", inset: 0 }}
-      />
+      {/* Ken Burns wrapper — slow cinematic drift on the backdrop only */}
+      <div className={styles.backdrop} aria-hidden="true">
+        <SmartImage
+          image={images.hero}
+          priority
+          sizes="100vw"
+          overlay
+          overlayStrength={0.55}
+          style={{ position: "absolute", inset: 0 }}
+        />
+      </div>
       <div className={styles.gradient} aria-hidden="true" />
       <div className={styles.glow} aria-hidden="true" />
 

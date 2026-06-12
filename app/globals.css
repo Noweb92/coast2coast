@@ -70,9 +70,21 @@
      `--font-display: var(--font-display)` self-reference is a custom-
      property cycle and could invalidate the font everywhere. */
   --rule: color-mix(in srgb, var(--gold-dark) 30%, transparent); /* dimension-line stroke */
-  --ghost-stroke: rgba(251, 191, 36, 0.16);       /* default ghost outline (overridable) */
-  --radius-draft: 4px;                            /* cards / items / figure / inputs */
-  --radius-crisp: 2px;                            /* buttons / chips / tags / pills-no-more */
+  --ghost-stroke: rgba(251, 191, 36, 0.2);        /* default ghost outline (overridable) */
+  --radius-draft: 14px;                           /* cards / items / figure / inputs */
+  --radius-crisp: 10px;                           /* buttons / chips / tags */
+
+  /* ── OBSIDIAN & GOLD additions (luxe pass) ────────────── */
+  /* Metallic gold foil — for display text via background-clip:text */
+  --foil: linear-gradient(105deg, #f7e7b4 0%, #fbbf24 30%, #c98f0a 52%, #fde68a 72%, #e8b53a 100%);
+  /* Smoked glass surfaces */
+  --glass-bg: rgba(30, 30, 36, 0.55);
+  --glass-border: rgba(251, 191, 36, 0.16);
+  /* Gold-tinted elevation */
+  --shadow-gold: 0 10px 44px rgba(251, 191, 36, 0.16);
+  --shadow-deep: 0 28px 90px rgba(0, 0, 0, 0.55);
+  /* 1px luxe gradient border (used with mask-composite recipe) */
+  --border-foil: linear-gradient(160deg, rgba(251, 191, 36, 0.5), rgba(251, 191, 36, 0.07) 42%, rgba(255, 255, 255, 0.05));
 
   /* Display type scale (DESIGN_SPEC §5) — modules MAY consume these
      instead of repeating the clamps. Always Archivo 700 uppercase. */
@@ -249,6 +261,53 @@ section[id] {
   to {
     transform: translateX(-50%);
   }
+}
+
+/* ── OBSIDIAN & GOLD utilities (luxe pass) ─────────────── */
+
+/* Metallic foil type — apply to display text. Solid-gold fallback first;
+   engines with background-clip:text get the gradient. */
+.foil {
+  color: var(--gold);
+}
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  .foil {
+    background: var(--foil);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+}
+
+/* Cinematic film grain — apply to a position:relative dark section.
+   Tiny inline SVG turbulence tile, overlay-blended at low opacity. */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+  mix-blend-mode: overlay;
+  opacity: 0.05;
+}
+
+/* 1px gradient "foil" border — apply to a position:relative rounded box. */
+.foil-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  padding: 1px;
+  background: var(--border-foil);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
 }
 
 /* ── Visually-hidden text for screen readers ───────────── */

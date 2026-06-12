@@ -68,6 +68,7 @@
 }
 .input:focus {
   border-color: var(--gold-dark);
+  box-shadow: 0 0 0 3px rgba(251, 191, 36, 0.12); /* soft gold focus halo */
 }
 .input::placeholder {
   color: var(--text-muted); /* AA on --dark-soft (5.96:1) */
@@ -148,6 +149,8 @@
 
 /* ── Submit button ────────────────────────────────────────── */
 .submit {
+  position: relative;
+  overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -155,20 +158,36 @@
   width: 100%;
   margin-top: 8px;
   padding: 15px 16px;
-  background: var(--gold);
+  background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold) 38%, var(--gold-dark) 130%);
   border: none;
-  border-radius: var(--radius-crisp, 2px); /* signature CTA recipe (§6.3) */
+  border-radius: var(--radius-crisp, 10px); /* signature CTA recipe */
   color: var(--dark);
   font-family: inherit;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.5px;
   cursor: pointer;
-  transition: background 0.3s, transform 0.3s, opacity 0.3s;
+  box-shadow: var(--shadow-gold), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease), opacity 0.3s;
+}
+/* Light sweep on hover — same recipe as the hero CTA */
+.submit::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -80%;
+  width: 45%;
+  transform: skewX(-22deg);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+  transition: left 0.65s var(--ease);
 }
 .submit:hover:not(:disabled) {
-  background: var(--gold-light);
   transform: translateY(-1px);
+  box-shadow: 0 14px 50px rgba(251, 191, 36, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+.submit:hover:not(:disabled)::before {
+  left: 135%;
 }
 .submit:disabled {
   background: var(--gold-dark);

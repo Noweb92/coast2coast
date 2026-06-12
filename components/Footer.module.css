@@ -15,7 +15,7 @@
 /* Ghost wordmark monument — composes the global .ghost utility
    (outline type, aria-hidden); this class only sizes and tunes it. */
 .giant {
-  --ghost-stroke: rgba(251, 191, 36, 0.12);
+  --ghost-stroke: rgba(251, 191, 36, 0.18);
   text-align: center;
   font-size: clamp(40px, 9vw, 118px);
   margin-bottom: 48px;

@@ -40,8 +40,11 @@
   margin: 0;
   padding: 0;
   list-style: none;
-  border: 1px solid var(--border);
-  background: var(--dark-card);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-draft);
+  overflow: hidden;
+  background: linear-gradient(180deg, rgba(42, 42, 50, 0.9), rgba(30, 30, 36, 0.95));
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
 }
 
 /* Internal hairlines — left + top rules per cell via box-shadow */
@@ -70,7 +73,7 @@
 
 .badge:hover {
   transform: none;
-  background: var(--gold-muted);
+  background: radial-gradient(120% 120% at 50% 0%, rgba(251, 191, 36, 0.12), rgba(251, 191, 36, 0.03));
 }
 
 .icon {

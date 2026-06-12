@@ -62,9 +62,17 @@
 }
 
 .card:hover {
-  transform: translateY(-4px);
-  border-color: var(--gold-border);
-  box-shadow: var(--shadow-card);
+  transform: translateY(-5px);
+  border-color: rgba(251, 191, 36, 0.35);
+  box-shadow: var(--shadow-card), 0 18px 60px rgba(184, 134, 11, 0.14);
+}
+
+/* Slow luxe zoom on the card photo */
+.card img {
+  transition: transform 1.4s var(--ease);
+}
+.card:hover img {
+  transform: scale(1.07);
 }
 
 /* Gold top seam — drawn left→right on hover, transform-only */
@@ -168,7 +176,11 @@
 
 @media (prefers-reduced-motion: reduce) {
   .card,
-  .card::after {
+  .card::after,
+  .card img {
     transition: none;
+  }
+  .card:hover img {
+    transform: none;
   }
 }

@@ -117,10 +117,14 @@
   color: rgba(251, 191, 36, 0.12); /* engines without text-stroke */
 }
 
-@supports (-webkit-text-stroke: 1px #000) {
+/* Luxe: metallic foil fill, faded — reads as embossed gold */
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
   .num {
+    background: var(--foil);
+    -webkit-background-clip: text;
+    background-clip: text;
     color: transparent;
-    -webkit-text-stroke: 1px var(--ghost-stroke);
+    opacity: 0.3;
   }
 }
 
