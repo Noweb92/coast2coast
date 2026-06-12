@@ -42,6 +42,7 @@ brand or page structure**.
 | `components/islands/Reveal.jsx` | Scroll-reveal wrapper (IntersectionObserver). Props: `{ as = "div", delay = 0, className, children }`. Renders children (server-rendered) inside a wrapper with class `reveal` (+ inline `transitionDelay` when `delay`); adds class `is-revealed` when intersecting (once, threshold 0.12). MUST render children visible immediately when `prefers-reduced-motion`. |
 | `components/islands/CountUp.jsx` | Hero stat counter. Props `{ end, suffix, duration = 2000 }`. Animates 0→end with rAF when scrolled into view; reduced-motion → renders final value statically. |
 | `components/islands/BeforeAfterSlider.jsx` | The draggable before/after comparison figure (owns its two images, pointer + keyboard handling). |
+| `components/islands/Tilt.jsx` | Pointer-tracked 3D tilt wrapper for cards (rAF, transform-only, server children pass through; disabled on touch + reduced-motion). |
 | `components/islands/QuoteForm.jsx` | Contact form (state, fetch to `/api/quote`, honeypot, success/error UI). |
 | `components/islands/InspectionForm.jsx` | Booking form (state, fetch to `/api/inspection`, honeypot, success/error UI). |
 | `components/Navbar.jsx` | Fixed nav: scrolled style (rAF-throttled), mobile menu toggle. |

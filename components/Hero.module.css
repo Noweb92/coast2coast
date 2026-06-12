@@ -17,7 +17,9 @@
   align-items: center;
   min-height: 100vh;
   min-height: 100svh; /* stable on mobile URL-bar collapse */
-  padding: 140px var(--pad-x) 170px; /* bottom clears the ticker strip */
+  /* Compact vertical rhythm: the FULL hero (kicker → stats + ticker)
+     must fit a 1366×768 laptop viewport. */
+  padding: clamp(96px, 12vh, 130px) var(--pad-x) clamp(120px, 16vh, 150px);
   background: var(--dark);
   overflow: hidden;
 }
@@ -145,10 +147,10 @@
    Variable width is the responsive mechanism: stretch steps down
    to 110% below 480px instead of wrapping or shrinking. */
 .title {
-  margin: 24px 0;
+  margin: 18px 0 20px;
   color: var(--text-white);
   font-family: var(--font-display, var(--font-inter, inherit));
-  font-size: clamp(46px, 9.5vw, 120px);
+  font-size: clamp(44px, 7.8vw, 92px);
   font-weight: 700;
   font-stretch: 125%;
   line-height: 0.92;
@@ -196,7 +198,7 @@
 
 /* ── Sub copy — hanging citation rule (system match with SectionHeader) ── */
 .sub {
-  margin: 0 0 40px;
+  margin: 0 0 30px;
   max-width: 480px;
   padding-left: 16px;
   border-left: 2px solid var(--gold-dark);
@@ -280,8 +282,8 @@
   display: flex;
   flex-wrap: wrap;
   gap: 20px clamp(20px, 3vw, 32px);
-  margin-top: 72px;
-  padding-top: 28px;
+  margin-top: clamp(32px, 5vh, 56px);
+  padding-top: 22px;
   border-top: 1px solid var(--rule, rgba(184, 134, 11, 0.3));
 }
 
@@ -299,7 +301,7 @@
 .statValue {
   color: var(--gold); /* fallback */
   font-family: var(--font-display, var(--font-inter, inherit));
-  font-size: clamp(30px, 4vw, 46px);
+  font-size: clamp(26px, 3.2vw, 38px);
   font-weight: 700;
   font-stretch: 125%;
   font-variant-numeric: tabular-nums;
@@ -389,6 +391,24 @@
 @keyframes marquee {
   to {
     transform: translateX(-50%); /* transform-only (compositor-friendly) */
+  }
+}
+
+/* Short desktop viewports (laptops ≤860px tall): squeeze further so the
+   whole story — headline, CTAs, stats, ticker — fits without scrolling. */
+@media (min-width: 769px) and (max-height: 860px) {
+  .title {
+    font-size: clamp(40px, 6.5vw, 72px);
+  }
+  .sub {
+    margin-bottom: 22px;
+  }
+  .stats {
+    margin-top: 26px;
+    padding-top: 18px;
+  }
+  .tickerRun {
+    padding: 10px 0;
   }
 }
 

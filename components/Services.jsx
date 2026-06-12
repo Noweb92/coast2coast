@@ -2,6 +2,7 @@ import { CheckCircle } from "lucide-react";
 import { services } from "@/lib/site.config";
 import { images } from "@/lib/images";
 import Reveal from "@/components/islands/Reveal";
+import Tilt from "@/components/islands/Tilt";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Icon from "@/components/ui/Icon";
 import SmartImage from "@/components/ui/SmartImage";
@@ -39,6 +40,7 @@ export default function Services() {
         <ul className={styles.grid}>
           {services.map((s, i) => (
             <Reveal as="li" key={s.id} delay={i * 0.08} className={styles.cell}>
+              <Tilt className={styles.tilt}>
               <article className={styles.card}>
                 <SmartImage
                   image={IMAGE_BY_ID[s.id]}
@@ -65,6 +67,7 @@ export default function Services() {
                   </ul>
                 </div>
               </article>
+              </Tilt>
             </Reveal>
           ))}
         </ul>

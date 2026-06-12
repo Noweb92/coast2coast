@@ -2,6 +2,7 @@ import { testimonials } from "@/lib/site.config";
 import Icon from "@/components/ui/Icon";
 import SectionHeader from "@/components/ui/SectionHeader";
 import Reveal from "@/components/islands/Reveal";
+import Tilt from "@/components/islands/Tilt";
 import styles from "./Testimonials.module.css";
 
 /**
@@ -21,6 +22,7 @@ export default function Testimonials() {
         <div className={styles.grid}>
           {testimonials.map((t, i) => (
             <Reveal key={t.name} delay={i * 0.1}>
+              <Tilt max={4} className={styles.tilt}>
               <figure className={styles.card}>
                 <div className={styles.stars} role="img" aria-label={`${t.rating} out of 5 stars`}>
                   {Array.from({ length: t.rating }).map((_, si) => (
@@ -40,6 +42,7 @@ export default function Testimonials() {
                   </span>
                 </figcaption>
               </figure>
+              </Tilt>
             </Reveal>
           ))}
         </div>

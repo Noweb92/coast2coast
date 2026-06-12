@@ -50,6 +50,11 @@
   }
 }
 
+/* 3D tilt wrapper (islands/Tilt) — full-height so the card fills it. */
+.tilt {
+  height: 100%;
+}
+
 /* Review card — drafted radius, layered static depth; hover lift is
    CSS-only and rides transform (shadow never animates). */
 .card {

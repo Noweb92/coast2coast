@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { ChevronRight } from "lucide-react";
 import { images } from "@/lib/images";
 import SmartImage from "@/components/ui/SmartImage";
@@ -10,69 +10,95 @@ import styles from "@/components/BeforeAfter.module.css";
  * BeforeAfterSlider — the draggable before/after comparison figure.
  *
  * Both layers use the SAME verified roof photograph; the "before" layer has a
- * CSS filter applied that simulates a weathered, grimy roof (desaturated,
- * darkened, slight sepia/contrast shift). The result: dragging the slider
- * genuinely shows the same roof clean vs. dirty — the effect actually works.
+ * CSS filter applied that simulates a weathered, grimy roof. Dragging the
+ * handle genuinely shows the same roof clean vs. dirty.
  *
- * When real before/after job photos become available, swap them in via two
- * separate `images.beforeAfterBefore` / `images.beforeAfterAfter` entries
- * and remove the `imgStyle` filter on the before layer.
+ * PERFORMANCE: drag NEVER goes through React state. Pointer events are
+ * captured on the figure (setPointerCapture — one listener, mouse + touch +
+ * pen unified) and position writes happen directly on the DOM inside a
+ * requestAnimationFrame: at most one clip-path/left/aria write per frame,
+ * zero re-renders, zero reconciliation of the next/image subtree. This is
+ * what makes the slider feel native.
  *
- * Interaction: pointer events are scoped to the figure; window move/up
- * listeners are attached ONLY while a drag is in progress. Keyboard:
- * role="slider" + aria-value* with ArrowLeft / ArrowRight (4% steps).
- * The clip-path inset and handle `left` are the only inline styles —
- * truly dynamic values.
+ * A11y: role="slider" + aria-value* on the figure, ArrowLeft/Right (4%),
+ * Up/Down, Home/End — all through the same rAF path.
  */
 const BEFORE_FILTER =
   "grayscale(0.55) contrast(0.92) brightness(0.72) sepia(0.18) saturate(0.7)";
 
-export default function BeforeAfterSlider() {
-  const [pos, setPos] = useState(50);
-  const [dragging, setDragging] = useState(false);
-  const figureRef = useRef(null);
+const MIN = 5;
+const MAX = 95;
 
-  const handleMove = useCallback((clientX) => {
-    const node = figureRef.current;
-    if (!node) return;
-    const rect = node.getBoundingClientRect();
-    setPos(Math.max(5, Math.min(95, ((clientX - rect.left) / rect.width) * 100)));
+export default function BeforeAfterSlider() {
+  const figureRef = useRef(null);
+  const clipRef = useRef(null);
+  const handleRef = useRef(null);
+  const pos = useRef(50);
+  const raf = useRef(0);
+  const dragging = useRef(false);
+
+  /* Single writer — everything that moves goes through this rAF. */
+  const render = useCallback(() => {
+    raf.current = 0;
+    const fig = figureRef.current;
+    const clip = clipRef.current;
+    const handle = handleRef.current;
+    if (!fig || !clip || !handle) return;
+    const p = pos.current;
+    clip.style.clipPath = `inset(0 ${100 - p}% 0 0)`;
+    handle.style.left = `${p}%`;
+    fig.setAttribute("aria-valuenow", String(Math.round(p)));
   }, []);
 
-  // Window listeners exist only for the lifetime of a drag.
-  useEffect(() => {
-    if (!dragging) return;
-    const onMove = (e) => handleMove(e.touches ? e.touches[0].clientX : e.clientX);
-    const onUp = () => setDragging(false);
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseup", onUp);
-    window.addEventListener("touchmove", onMove, { passive: true });
-    window.addEventListener("touchend", onUp);
-    return () => {
-      window.removeEventListener("mousemove", onMove);
-      window.removeEventListener("mouseup", onUp);
-      window.removeEventListener("touchmove", onMove);
-      window.removeEventListener("touchend", onUp);
-    };
-  }, [dragging, handleMove]);
+  const setPos = useCallback(
+    (p) => {
+      pos.current = Math.max(MIN, Math.min(MAX, p));
+      if (!raf.current) raf.current = requestAnimationFrame(render);
+    },
+    [render]
+  );
 
-  // Full APG slider pattern: arrows step, Home/End jump to the extremes.
+  const moveTo = useCallback(
+    (clientX) => {
+      const fig = figureRef.current;
+      if (!fig) return;
+      const rect = fig.getBoundingClientRect();
+      setPos(((clientX - rect.left) / rect.width) * 100);
+    },
+    [setPos]
+  );
+
+  useEffect(() => () => cancelAnimationFrame(raf.current), []);
+
+  const onPointerDown = (e) => {
+    dragging.current = true;
+    figureRef.current?.setPointerCapture(e.pointerId);
+    moveTo(e.clientX);
+  };
+  const onPointerMove = (e) => {
+    if (dragging.current) moveTo(e.clientX);
+  };
+  const endDrag = (e) => {
+    dragging.current = false;
+    figureRef.current?.releasePointerCapture?.(e.pointerId);
+  };
+
   const onKeyDown = (e) => {
     if (e.key === "ArrowLeft" || e.key === "ArrowDown") {
       e.preventDefault();
-      setPos((p) => Math.max(5, p - 4));
+      setPos(pos.current - 4);
     }
     if (e.key === "ArrowRight" || e.key === "ArrowUp") {
       e.preventDefault();
-      setPos((p) => Math.min(95, p + 4));
+      setPos(pos.current + 4);
     }
     if (e.key === "Home") {
       e.preventDefault();
-      setPos(5);
+      setPos(MIN);
     }
     if (e.key === "End") {
       e.preventDefault();
-      setPos(95);
+      setPos(MAX);
     }
   };
 
@@ -85,12 +111,14 @@ export default function BeforeAfterSlider() {
       role="slider"
       tabIndex={0}
       aria-label="Before and after roof comparison"
-      aria-valuemin={5}
-      aria-valuemax={95}
-      aria-valuenow={Math.round(pos)}
+      aria-valuemin={MIN}
+      aria-valuemax={MAX}
+      aria-valuenow={50}
       onKeyDown={onKeyDown}
-      onMouseDown={(e) => { setDragging(true); handleMove(e.clientX); }}
-      onTouchStart={(e) => { setDragging(true); handleMove(e.touches[0].clientX); }}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={endDrag}
+      onPointerCancel={endDrag}
     >
       {/* AFTER — the same roof, untouched (clean & vibrant) */}
       <SmartImage
@@ -102,7 +130,7 @@ export default function BeforeAfterSlider() {
       </SmartImage>
 
       {/* BEFORE — same roof, clipped by the handle, with a "weathered" filter */}
-      <div className={styles.clip} style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
+      <div ref={clipRef} className={styles.clip} style={{ clipPath: "inset(0 50% 0 0)" }}>
         <SmartImage
           image={roof}
           sizes="(max-width: 900px) 100vw, 900px"
@@ -116,7 +144,7 @@ export default function BeforeAfterSlider() {
       </div>
 
       {/* Drag handle (decorative — the slider semantics live on the figure) */}
-      <div className={styles.handle} style={{ left: `${pos}%` }} aria-hidden="true">
+      <div ref={handleRef} className={styles.handle} style={{ left: "50%" }} aria-hidden="true">
         <span className={styles.grip}>
           <span className={styles.chevrons}>
             <ChevronRight size={14} />

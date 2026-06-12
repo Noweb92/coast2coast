@@ -32,6 +32,13 @@
   display: flex;
 }
 
+/* 3D tilt wrapper (islands/Tilt) — preserves the flex chain so cards
+   stay equal-height; the perspective transform lives on this node. */
+.tilt {
+  display: flex;
+  flex: 1;
+}
+
 /* Stepped rooflines — each card sits one course lower than the last */
 @media (min-width: 1024px) {
   .grid {
