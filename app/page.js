@@ -15,7 +15,6 @@ import Hero from "@/components/Hero";
 import Services from "@/components/Services";
 import TrustBadges from "@/components/TrustBadges";
 import Process from "@/components/Process";
-import BeforeAfter from "@/components/BeforeAfter";
 import BookInspection from "@/components/BookInspection";
 import Testimonials from "@/components/Testimonials";
 import FAQ from "@/components/FAQ";
@@ -35,7 +34,10 @@ export default function Home() {
         <Services />
         <TrustBadges />
         <Process />
-        <BeforeAfter />
+        {/* BeforeAfter ("See the difference") is parked until the client
+            provides real job photos — component, slider island and the
+            /photos/beforeafter-* pair are kept ready. To restore: re-import
+            BeforeAfter and mount it here (then shift section indexes). */}
         <BookInspection />
         <Testimonials />
         <FAQ />

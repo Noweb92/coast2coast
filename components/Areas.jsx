@@ -26,7 +26,7 @@ export default function Areas() {
             title="All of WA."
             sub="Coast to coast, north to south."
             center
-            index="08"
+            index="07"
           />
         </Reveal>
 

@@ -17,7 +17,7 @@ export default function Testimonials() {
     <section className={`${styles.section} cv-section`}>
       <div className={styles.inner}>
         <Reveal className={styles.head}>
-          <SectionHeader label="TESTIMONIALS" title="Earned trust." center index="06" />
+          <SectionHeader label="TESTIMONIALS" title="Earned trust." center index="05" />
         </Reveal>
         <div className={styles.grid}>
           {testimonials.map((t, i) => (

@@ -34,7 +34,7 @@ export default function Contact() {
           <Reveal>
             <SectionHeader
               label="CONTACT"
-              index="09"
+              index="08"
               dark={false}
               title={<>Get your<br />free quote.</>}
               sub={<>Tell us about your roof and we&apos;ll get back to you within 24 hours with an honest, itemised quote.</>}

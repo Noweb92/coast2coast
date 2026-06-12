@@ -17,7 +17,7 @@ export default function FAQ() {
     <section id="faq" className={`cv-section ${styles.section}`}>
       <div className={styles.inner}>
         <Reveal className={styles.header}>
-          <SectionHeader label="FAQ" title="Questions? Answered." dark={false} center index="07" />
+          <SectionHeader label="FAQ" title="Questions? Answered." dark={false} center index="06" />
         </Reveal>
 
         <div className={styles.list}>
